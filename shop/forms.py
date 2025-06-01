@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import User, Product, Category, Order
+
+from .models import Category, Order, Product, User
 
 
 class CustomUserCreationForm(UserCreationForm):

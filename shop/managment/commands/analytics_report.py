@@ -1,9 +1,11 @@
-from django.core.management.base import BaseCommand
-from django.db.models import Sum, Count, Avg, Q
-from django.utils import timezone
-from datetime import timedelta
-from shop.models import Order, OrderItem, Product, Category, User
 import json
+from datetime import timedelta
+
+from django.core.management.base import BaseCommand
+from django.db.models import Avg, Sum
+from django.utils import timezone
+
+from shop.models import Category, Order, OrderItem, Product, User
 
 
 class Command(BaseCommand):

@@ -1,3 +1,3 @@
 [flake8]
-exclude = .venv,myvenv,env,venv,__pycache__,migrations,*.pyc
+exclude = .venv, myvenv, env, */site-packages/*
 max-line-length = 88

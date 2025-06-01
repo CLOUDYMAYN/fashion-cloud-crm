@@ -1,11 +1,13 @@
-from django.core.management.base import BaseCommand
-from django.contrib.auth import get_user_model
-from shop.models import Category, Product, Order, OrderItem, Cart, CartItem
-from decimal import Decimal
 import random
-from datetime import datetime, timedelta
-from django.utils import timezone
+from datetime import timedelta
+from decimal import Decimal
+
+from django.contrib.auth import get_user_model
+from django.core.management.base import BaseCommand
 from django.db.models import Sum
+from django.utils import timezone
+
+from shop.models import Category, Order, OrderItem, Product
 
 User = get_user_model()
 

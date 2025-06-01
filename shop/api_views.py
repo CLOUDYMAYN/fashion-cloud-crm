@@ -1,12 +1,13 @@
-from django.http import JsonResponse
-from django.views.decorators.http import require_http_methods
-from django.contrib.auth.decorators import login_required
-from django.db.models import Sum, Count, Q, Avg
-from django.utils import timezone
-from datetime import timedelta, datetime
 import json
-from .models import Order, OrderItem, Product, Category, User
+from datetime import timedelta
+
+from django.db.models import Avg, Sum
+from django.http import JsonResponse
+from django.utils import timezone
+from django.views.decorators.http import require_http_methods
+
 from .decorators import admin_required
+from .models import Category, Order, OrderItem, Product, User
 
 
 @admin_required
@@ -113,7 +114,7 @@ def export_data_api(request):
     """API для экспорта данных"""
 
     data_type = request.GET.get("type", "orders")
-    format_type = request.GET.get("format", "json")
+    request.GET.get("format", "json")
 
     if data_type == "orders":
         orders = Order.objects.select_related("user").prefetch_related("items__product")

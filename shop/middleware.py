@@ -1,8 +1,9 @@
-from django.utils.deprecation import MiddlewareMixin
-from django.http import JsonResponse
-from django.core.cache import cache
-import time
 import logging
+import time
+
+from django.core.cache import cache
+from django.http import JsonResponse
+from django.utils.deprecation import MiddlewareMixin
 
 logger = logging.getLogger(__name__)
 

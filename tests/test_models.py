@@ -1,6 +1,7 @@
-from django.test import TestCase
 from django.contrib.auth import get_user_model
-from shop.models import Category, Product, Cart, CartItem, Order, OrderItem
+from django.test import TestCase
+
+from shop.models import Cart, CartItem, Category, Product
 
 User = get_user_model()
 

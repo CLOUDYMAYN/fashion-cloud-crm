@@ -1,21 +1,18 @@
-from django.shortcuts import render, get_object_or_404, redirect
+import json
+from datetime import timedelta
+
+from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
+from django.db.models import Avg, Sum
 from django.http import JsonResponse
-from django.db.models import Sum, Count, Q, Avg
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
-from datetime import timedelta
-import json
-from .models import Product, Category, Cart, CartItem, Order, OrderItem, User
-from .forms import (
-    CustomUserCreationForm,
-    ProductForm,
-    CategoryForm,
-    CheckoutForm,
-    UserRoleForm,
-)
+
 from .decorators import admin_required, boss_required
+from .forms import (CategoryForm, CheckoutForm, CustomUserCreationForm,
+                    ProductForm, UserRoleForm)
+from .models import Cart, CartItem, Category, Order, OrderItem, Product, User
 
 
 def get_base_template(user):

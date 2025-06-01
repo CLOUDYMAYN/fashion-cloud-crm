@@ -1,6 +1,7 @@
-from django.urls import path
 from django.contrib.auth import views as auth_views
-from . import views, api_views
+from django.urls import path
+
+from . import api_views, views
 
 app_name = "shop"
 
