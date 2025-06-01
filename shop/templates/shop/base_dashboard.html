@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dashboard - FashionStore{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'shop/css/dashboard.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Add this right after the opening <body> tag -->
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">👕</span>
+                    <span class="logo-text">FashionStore ERP</span>
+                </div>
+            </div>
+            
+            <div class="user-profile">
+                <div class="user-avatar">
+                    {{ user.first_name.0|default:user.username.0|upper }}
+                </div>
+                <div class="user-info">
+                    <div class="user-name">{{ user.get_full_name|default:user.username }}</div>
+                    <div class="user-role">{{ user.get_role_display }}</div>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="{% url 'shop:dashboard' %}" class="nav-item active">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+                <a href="{% url 'shop:admin_products' %}" class="nav-item">
+                    <span class="nav-icon">📦</span>
+                    <span class="nav-text">Товары</span>
+                </a>
+                <a href="{% url 'shop:admin_categories' %}" class="nav-item">
+                    <span class="nav-icon">🏷️</span>
+                    <span class="nav-text">Категории</span>
+                </a>
+                <a href="{% url 'shop:admin_orders' %}" class="nav-item">
+                    <span class="nav-icon">🛒</span>
+                    <span class="nav-text">Заказы</span>
+                </a>
+                {% if user.role == 'boss' %}
+                <a href="{% url 'shop:admin_users' %}" class="nav-item">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-text">Пользователи</span>
+                </a>
+                {% endif %}
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button onclick="logout()" class="logout-btn">
+                    <span class="logout-icon">🚪</span>
+                    <span class="logout-text">Выйти</span>
+                </button>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                        <div class="message {{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            {% block content %}
+            {% endblock %}
+        </main>
+    </div>
+
+    <script>
+        function logout() {
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || '{{ csrf_token }}';
+            
+            fetch('{% url "shop:logout" %}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = '{% url "shop:home" %}';
+                }
+            })
+            .catch(error => {
+                console.error('Logout error:', error);
+                // Fallback - redirect to logout URL
+                window.location.href = '{% url "shop:logout" %}';
+            });
+        }
+
+        // Active nav item
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('href') === currentPath) {
+                    item.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

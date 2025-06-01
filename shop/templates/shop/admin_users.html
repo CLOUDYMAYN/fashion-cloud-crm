@@ -1,0 +1,63 @@
+{% extends base_template|default:'shop/base_boss.html' %}
+
+{% block title %}Управление пользователями - FashionStore{% endblock %}
+
+{% block content %}
+<div class="dashboard-content">
+    <div class="dashboard-header">
+        <h1>👥 Управление пользователями</h1>
+        <div class="header-actions">
+            <div class="filter-buttons">
+                <button class="filter-btn active">Все</button>
+                <button class="filter-btn">Покупатели</button>
+                <button class="filter-btn">Менеджеры</button>
+                <button class="filter-btn">Руководители</button>
+            </div>
+        </div>
+    </div>
+    
+    {% if users %}
+        <div class="data-table-card">
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Пользователь</th>
+                            <th>Имя</th>
+                            <th>Email</th>
+                            <th>Роль</th>
+                            <th>Дата регистрации</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                            <tr>
+                                <td class="username">{{ user.username }}</td>
+                                <td class="full-name">{{ user.get_full_name|default:"-" }}</td>
+                                <td class="email">{{ user.email }}</td>
+                                <td>
+                                    <span class="role-badge role-{{ user.role }}">
+                                        {{ user.get_role_display }}
+                                    </span>
+                                </td>
+                                <td class="date">{{ user.date_joined|date:"d.m.Y" }}</td>
+                                <td class="actions">
+                                    <a href="{% url 'shop:admin_user_role' user.id %}" class="action-btn edit">
+                                        ⚙️
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        <div class="empty-state-card">
+            <div class="empty-icon">👥</div>
+            <h3>Пользователей пока нет</h3>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

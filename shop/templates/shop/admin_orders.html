@@ -1,0 +1,68 @@
+{% extends base_template|default:'shop/base_dashboard.html' %}
+
+{% block title %}Управление заказами - FashionStore{% endblock %}
+
+{% block content %}
+<div class="dashboard-content">
+    <div class="dashboard-header">
+        <h1>🛒 Управление заказами</h1>
+        <div class="header-actions">
+            <div class="filter-buttons">
+                <button class="filter-btn active">Все</button>
+                <button class="filter-btn">Новые</button>
+                <button class="filter-btn">В обработке</button>
+                <button class="filter-btn">Завершенные</button>
+            </div>
+        </div>
+    </div>
+    
+    {% if orders %}
+        <div class="data-table-card">
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>№ заказа</th>
+                            <th>Покупатель</th>
+                            <th>Email</th>
+                            <th>Телефон</th>
+                            <th>Сумма</th>
+                            <th>Статус</th>
+                            <th>Дата</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                            <tr>
+                                <td class="order-id">#{{ order.id }}</td>
+                                <td class="customer-name">{{ order.first_name }} {{ order.last_name }}</td>
+                                <td class="email">{{ order.email }}</td>
+                                <td class="phone">{{ order.phone }}</td>
+                                <td class="price">{{ order.total_price }} ₽</td>
+                                <td>
+                                    <span class="status-badge status-{{ order.status }}">
+                                        {{ order.get_status_display }}
+                                    </span>
+                                </td>
+                                <td class="date">{{ order.created_at|date:"d.m.Y H:i" }}</td>
+                                <td class="actions">
+                                    <a href="{% url 'shop:admin_order_detail' order.id %}" class="action-btn view">
+                                        👁️
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        <div class="empty-state-card">
+            <div class="empty-icon">🛒</div>
+            <h3>Заказов пока нет</h3>
+            <p>Заказы будут отображаться здесь</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

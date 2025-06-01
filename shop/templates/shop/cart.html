@@ -1,0 +1,52 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Корзина - Магазин одежды{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="section-title">Корзина</h1>
+    
+    {% if cart_items %}
+        <div class="card">
+            {% for item in cart_items %}
+                <div class="cart-item">
+                    {% if item.product.image %}
+                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="cart-item-image">
+                    {% else %}
+                        <div class="cart-item-image" style="background: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #999;">
+                            Нет фото
+                        </div>
+                    {% endif %}
+                    <div class="cart-item-info">
+                        <h3 class="cart-item-title">{{ item.product.name }}</h3>
+                        <p>Количество: {{ item.quantity }}</p>
+                        <p class="cart-item-price">{{ item.product.price }} ₽ × {{ item.quantity }} = {{ item.get_total_price }} ₽</p>
+                    </div>
+                    <a href="{% url 'shop:remove_from_cart' item.id %}" class="btn btn-danger btn-small">
+                        Удалить
+                    </a>
+                </div>
+            {% endfor %}
+            
+            <div class="cart-total">
+                <p class="cart-total-amount">Итого: 
+                    {% for item in cart_items %}
+                        {% if forloop.first %}{{ item.cart.get_total_price }}{% endif %}
+                    {% endfor %} ₽
+                </p>
+                <a href="{% url 'shop:checkout' %}" class="btn btn-primary">
+                    Оформить заказ
+                </a>
+            </div>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <h3>Корзина пуста</h3>
+            <p>Добавьте товары из каталога</p>
+            <a href="{% url 'shop:product_list' %}" class="btn btn-primary">
+                Перейти в каталог
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
