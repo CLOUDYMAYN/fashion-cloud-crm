@@ -5,59 +5,54 @@ from shop.models import Category, Product
 
 User = get_user_model()
 
+
 class ViewsTestCase(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = User.objects.create_user(
-            username='testuser',
-            password='testpass123'
+            username="testuser", password="testpass123"
         )
         self.admin_user = User.objects.create_user(
-            username='admin',
-            password='adminpass123',
-            role='manager'
+            username="admin", password="adminpass123", role="manager"
         )
         self.category = Category.objects.create(
-            name='Test Category',
-            slug='test-category'
+            name="Test Category", slug="test-category"
         )
         self.product = Product.objects.create(
-            name='Test Product',
-            slug='test-product',
+            name="Test Product",
+            slug="test-product",
             category=self.category,
-            description='Test description',
+            description="Test description",
             price=100.00,
-            stock=10
+            stock=10,
         )
 
     def test_home_view(self):
-        response = self.client.get(reverse('shop:home'))
+        response = self.client.get(reverse("shop:home"))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'FashionStore')
+        self.assertContains(response, "FashionStore")
 
     def test_product_list_view(self):
-        response = self.client.get(reverse('shop:product_list'))
+        response = self.client.get(reverse("shop:product_list"))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Test Product')
+        self.assertContains(response, "Test Product")
 
     def test_product_detail_view(self):
         response = self.client.get(
-            reverse('shop:product_detail', args=[self.product.slug])
+            reverse("shop:product_detail", args=[self.product.slug])
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.product.name)
 
     def test_dashboard_requires_admin(self):
-        response = self.client.get(reverse('shop:dashboard'))
+        response = self.client.get(reverse("shop:dashboard"))
         self.assertEqual(response.status_code, 403)
 
     def test_dashboard_with_admin_user(self):
-        self.client.login(username='admin', password='adminpass123')
-        response = self.client.get(reverse('shop:dashboard'))
+        self.client.login(username="admin", password="adminpass123")
+        response = self.client.get(reverse("shop:dashboard"))
         self.assertEqual(response.status_code, 200)
 
     def test_add_to_cart_requires_login(self):
-        response = self.client.post(
-            reverse('shop:add_to_cart', args=[self.product.id])
-        )
+        response = self.client.post(reverse("shop:add_to_cart", args=[self.product.id]))
         self.assertEqual(response.status_code, 302)  # Redirect to login

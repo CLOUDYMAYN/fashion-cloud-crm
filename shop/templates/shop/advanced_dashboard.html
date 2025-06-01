@@ -1,0 +1,925 @@
+{% extends base_template|default:'shop/base_dashboard.html' %}
+
+{% block title %}Продвинутая аналитика - FashionStore{% endblock %}
+
+{% block content %}
+<div class="dashboard-content">
+    <!-- Header with controls -->
+    <div class="dashboard-header">
+        <h1>📊 Продвинутая аналитика</h1>
+        <div class="header-actions">
+            <select id="periodSelect" class="period-select">
+                <option value="7">7 дней</option>
+                <option value="30" selected>30 дней</option>
+                <option value="90">90 дней</option>
+                <option value="365">1 год</option>
+            </select>
+            <button onclick="exportData('orders')" class="btn btn-secondary">
+                📊 Экспорт заказов
+            </button>
+            <button onclick="refreshData()" class="btn btn-primary">
+                🔄 Обновить
+            </button>
+        </div>
+    </div>
+
+    <!-- Real-time notifications -->
+    <div id="notifications" class="notifications-container"></div>
+
+    <!-- Advanced Stats Grid -->
+    <div class="advanced-stats-grid">
+        <div class="stat-card revenue-card">
+            <div class="stat-header">
+                <h3>💰 Выручка</h3>
+                <span class="stat-period" id="revenuePeriod">30 дней</span>
+            </div>
+            <div class="stat-value" id="totalRevenue">0 ₽</div>
+            <div class="stat-change" id="revenueChange">+0%</div>
+            <div class="stat-chart">
+                <canvas id="revenueChart" width="200" height="60"></canvas>
+            </div>
+        </div>
+
+        <div class="stat-card orders-card">
+            <div class="stat-header">
+                <h3>🛒 Заказы</h3>
+                <span class="stat-period" id="ordersPeriod">30 дней</span>
+            </div>
+            <div class="stat-value" id="totalOrders">0</div>
+            <div class="stat-change" id="ordersChange">+0%</div>
+            <div class="stat-chart">
+                <canvas id="ordersChart" width="200" height="60"></canvas>
+            </div>
+        </div>
+
+        <div class="stat-card customers-card">
+            <div class="stat-header">
+                <h3>👥 Покупатели</h3>
+                <span class="stat-period">Всего</span>
+            </div>
+            <div class="stat-value" id="totalCustomers">0</div>
+            <div class="stat-change" id="customersChange">Активных</div>
+        </div>
+
+        <div class="stat-card avg-order-card">
+            <div class="stat-header">
+                <h3>📈 Средний чек</h3>
+                <span class="stat-period" id="avgOrderPeriod">30 дней</span>
+            </div>
+            <div class="stat-value" id="avgOrderValue">0 ₽</div>
+            <div class="stat-change" id="avgOrderChange">+0%</div>
+        </div>
+    </div>
+
+    <!-- Interactive Charts Section -->
+    <div class="charts-section">
+        <!-- Sales Trend Chart -->
+        <div class="chart-card sales-trend">
+            <div class="chart-header">
+                <h3>📈 Тренд продаж</h3>
+                <div class="chart-controls">
+                    <button class="chart-btn active" onclick="switchChartType('revenue')">Выручка</button>
+                    <button class="chart-btn" onclick="switchChartType('orders')">Заказы</button>
+                    <button class="chart-btn" onclick="switchChartType('both')">Оба</button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="salesTrendChart" width="800" height="400"></canvas>
+            </div>
+        </div>
+
+        <!-- Category Performance -->
+        <div class="chart-card category-performance">
+            <div class="chart-header">
+                <h3>🏷️ Производительность категорий</h3>
+                <p>Продажи по категориям товаров</p>
+            </div>
+            <div class="chart-container">
+                <canvas id="categoryChart" width="400" height="400"></canvas>
+            </div>
+            <div class="category-legend" id="categoryLegend"></div>
+        </div>
+    </div>
+
+    <!-- Top Products Table -->
+    <div class="top-products-section">
+        <div class="section-header">
+            <h3>🏆 Топ товары</h3>
+            <button onclick="exportData('products')" class="btn btn-secondary">
+                📋 Экспорт товаров
+            </button>
+        </div>
+        <div class="table-container">
+            <table class="data-table" id="topProductsTable">
+                <thead>
+                    <tr>
+                        <th>Позиция</th>
+                        <th>Товар</th>
+                        <th>Продано</th>
+                        <th>Выручка</th>
+                        <th>Цена</th>
+                    </tr>
+                </thead>
+                <tbody id="topProductsBody">
+                    <!-- Данные загружаются через JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Bulk Actions Panel -->
+    <div class="bulk-actions-panel" id="bulkActionsPanel" style="display: none;">
+        <div class="panel-header">
+            <h4>Массовые действия</h4>
+            <button onclick="closeBulkActions()" class="close-btn">×</button>
+        </div>
+        <div class="panel-content">
+            <div class="action-group">
+                <button onclick="bulkAction('activate')" class="btn btn-success">
+                    ✅ Активировать
+                </button>
+                <button onclick="bulkAction('deactivate')" class="btn btn-danger">
+                    ❌ Деактивировать
+                </button>
+            </div>
+            <div class="action-group">
+                <input type="number" id="stockValue" placeholder="Количество" class="form-input">
+                <button onclick="bulkUpdateStock()" class="btn btn-primary">
+                    📦 Обновить остаток
+                </button>
+            </div>
+            <div class="action-group">
+                <input type="number" id="priceMultiplier" placeholder="Множитель (1.1 = +10%)" step="0.1" class="form-input">
+                <button onclick="bulkUpdatePrice()" class="btn btn-warning">
+                    💰 Изменить цены
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.advanced-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.stat-header h3 {
+    font-size: 1rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+.stat-period {
+    font-size: 0.8rem;
+    color: #9ca3af;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #111827;
+    margin-bottom: 0.5rem;
+}
+
+.stat-change {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.stat-chart {
+    margin-top: 1rem;
+    height: 60px;
+}
+
+.revenue-card {
+    border-left: 4px solid #10b981;
+}
+
+.orders-card {
+    border-left: 4px solid #3b82f6;
+}
+
+.customers-card {
+    border-left: 4px solid #8b5cf6;
+}
+
+.avg-order-card {
+    border-left: 4px solid #f59e0b;
+}
+
+.charts-section {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.chart-controls {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.chart-btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid #d1d5db;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.chart-btn.active {
+    background: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+}
+
+.period-select {
+    padding: 0.5rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: white;
+}
+
+.notifications-container {
+    margin-bottom: 1.5rem;
+}
+
+.notification {
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.notification.info {
+    background: #dbeafe;
+    border-left: 4px solid #3b82f6;
+}
+
+.notification.warning {
+    background: #fef3c7;
+    border-left: 4px solid #f59e0b;
+}
+
+.notification.success {
+    background: #d1fae5;
+    border-left: 4px solid #10b981;
+}
+
+.notification.urgent {
+    background: #fee2e2;
+    border-left: 4px solid #ef4444;
+}
+
+.bulk-actions-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    min-width: 400px;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.panel-content {
+    padding: 1.5rem;
+}
+
+.action-group {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    align-items: center;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #6b7280;
+}
+
+@media (max-width: 768px) {
+    .charts-section {
+        grid-template-columns: 1fr;
+    }
+    
+    .advanced-stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .action-group {
+        flex-direction: column;
+    }
+}
+</style>
+
+<script>
+let currentPeriod = 30;
+let currentChartType = 'revenue';
+let dashboardData = null;
+
+// Инициализация
+document.addEventListener('DOMContentLoaded', function() {
+    loadDashboardData();
+    loadNotifications();
+    
+    // Обновляем данные каждые 30 секунд
+    setInterval(loadNotifications, 30000);
+    
+    // Обработчик изменения периода
+    document.getElementById('periodSelect').addEventListener('change', function() {
+        currentPeriod = parseInt(this.value);
+        loadDashboardData();
+    });
+});
+
+// Загрузка данных dashboard
+async function loadDashboardData() {
+    try {
+        const response = await fetch(`/api/dashboard-stats/?days=${currentPeriod}`);
+        const data = await response.json();
+        
+        if (data.success) {
+            dashboardData = data;
+            updateStatsCards(data.stats);
+            updateCharts(data);
+            updateTopProductsTable(data.top_products);
+        }
+    } catch (error) {
+        console.error('Error loading dashboard data:', error);
+    }
+}
+
+// Обновление карточек статистики
+function updateStatsCards(stats) {
+    document.getElementById('totalRevenue').textContent = 
+        new Intl.NumberFormat('ru-RU').format(stats.total_revenue) + ' ₽';
+    document.getElementById('totalOrders').textContent = stats.total_orders;
+    document.getElementById('totalCustomers').textContent = stats.total_customers;
+    document.getElementById('avgOrderValue').textContent = 
+        new Intl.NumberFormat('ru-RU').format(stats.avg_order_value) + ' ₽';
+    
+    // Обновляем периоды
+    document.getElementById('revenuePeriod').textContent = `${currentPeriod} дней`;
+    document.getElementById('ordersPeriod').textContent = `${currentPeriod} дней`;
+    document.getElementById('avgOrderPeriod').textContent = `${currentPeriod} дней`;
+}
+
+// Обновление графиков
+function updateCharts(data) {
+    drawSalesTrendChart(data.daily_sales);
+    drawCategoryChart(data.category_stats);
+    drawMiniCharts(data.daily_sales);
+}
+
+// Рисование основного графика продаж
+function drawSalesTrendChart(salesData) {
+    const canvas = document.getElementById('salesTrendChart');
+    const ctx = canvas.getContext('2d');
+    
+    // Очищаем canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    if (!salesData || salesData.length === 0) return;
+    
+    const padding = 60;
+    const chartWidth = canvas.width - padding * 2;
+    const chartHeight = canvas.height - padding * 2;
+    
+    // Данные для отображения
+    let data1, data2, label1, label2, color1, color2;
+    
+    if (currentChartType === 'revenue') {
+        data1 = salesData.map(item => item.revenue);
+        label1 = 'Выручка (₽)';
+        color1 = '#10b981';
+    } else if (currentChartType === 'orders') {
+        data1 = salesData.map(item => item.orders);
+        label1 = 'Заказы';
+        color1 = '#3b82f6';
+    } else { // both
+        data1 = salesData.map(item => item.revenue);
+        data2 = salesData.map(item => item.orders);
+        label1 = 'Выручка (₽)';
+        label2 = 'Заказы';
+        color1 = '#10b981';
+        color2 = '#3b82f6';
+    }
+    
+    const labels = salesData.map(item => {
+        const date = new Date(item.date);
+        return date.toLocaleDateString('ru-RU', { month: 'short', day: 'numeric' });
+    });
+    
+    // Рисуем линейный график
+    drawLineChart(ctx, {
+        data1, data2, labels,
+        color1, color2,
+        width: chartWidth,
+        height: chartHeight,
+        padding
+    });
+}
+
+// Функция для рисования линейного графика
+function drawLineChart(ctx, options) {
+    const { data1, data2, labels, color1, color2, width, height, padding } = options;
+    
+    const maxValue1 = Math.max(...data1) || 1;
+    const maxValue2 = data2 ? Math.max(...data2) || 1 : maxValue1;
+    
+    const stepX = width / (data1.length - 1);
+    
+    // Рисуем сетку
+    ctx.strokeStyle = '#f3f4f6';
+    ctx.lineWidth = 1;
+    
+    // Горизонтальные линии
+    for (let i = 0; i <= 5; i++) {
+        const y = padding + (height / 5) * i;
+        ctx.beginPath();
+        ctx.moveTo(padding, y);
+        ctx.lineTo(padding + width, y);
+        ctx.stroke();
+    }
+    
+    // Вертикальные линии
+    for (let i = 0; i < data1.length; i++) {
+        const x = padding + stepX * i;
+        ctx.beginPath();
+        ctx.moveTo(x, padding);
+        ctx.lineTo(x, padding + height);
+        ctx.stroke();
+    }
+    
+    // Рисуем первую линию
+    ctx.strokeStyle = color1;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    
+    data1.forEach((value, index) => {
+        const x = padding + stepX * index;
+        const y = padding + height - (value / maxValue1) * height;
+        
+        if (index === 0) {
+            ctx.moveTo(x, y);
+        } else {
+            ctx.lineTo(x, y);
+        }
+    });
+    
+    ctx.stroke();
+    
+    // Рисуем вторую линию если есть
+    if (data2) {
+        ctx.strokeStyle = color2;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        
+        data2.forEach((value, index) => {
+            const x = padding + stepX * index;
+            const y = padding + height - (value / maxValue2) * height;
+            
+            if (index === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
+        });
+        
+        ctx.stroke();
+    }
+    
+    // Подписи осей
+    ctx.fillStyle = '#6b7280';
+    ctx.font = '12px Inter';
+    ctx.textAlign = 'center';
+    
+    // Подписи дат
+    labels.forEach((label, index) => {
+        if (index % Math.ceil(labels.length / 7) === 0) { // Показываем каждую 7-ю дату
+            const x = padding + stepX * index;
+            ctx.fillText(label, x, padding + height + 20);
+        }
+    });
+}
+
+// Рисование круговой диаграммы категорий
+function drawCategoryChart(categoryData) {
+    const canvas = document.getElementById('categoryChart');
+    const ctx = canvas.getContext('2d');
+    
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    if (!categoryData || categoryData.length === 0) return;
+    
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = 120;
+    
+    const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'];
+    const total = categoryData.reduce((sum, cat) => sum + cat.revenue, 0);
+    
+    if (total === 0) return;
+    
+    let currentAngle = -Math.PI / 2;
+    
+    // Рисуем сегменты
+    categoryData.forEach((category, index) => {
+        const sliceAngle = (category.revenue / total) * 2 * Math.PI;
+        
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, currentAngle, currentAngle + sliceAngle);
+        ctx.lineTo(centerX, centerY);
+        ctx.closePath();
+        
+        ctx.fillStyle = colors[index % colors.length];
+        ctx.fill();
+        
+        // Подписи
+        const labelAngle = currentAngle + sliceAngle / 2;
+        const labelX = centerX + Math.cos(labelAngle) * (radius + 30);
+        const labelY = centerY + Math.sin(labelAngle) * (radius + 30);
+        
+        ctx.fillStyle = '#374151';
+        ctx.font = '12px Inter';
+        ctx.textAlign = 'center';
+        
+        const percentage = ((category.revenue / total) * 100).toFixed(1);
+        if (percentage > 5) { // Показываем только значимые сегменты
+            ctx.fillText(`${category.name}`, labelX, labelY);
+            ctx.fillText(`${percentage}%`, labelX, labelY + 15);
+        }
+        
+        currentAngle += sliceAngle;
+    });
+    
+    // Обновляем легенду
+    updateCategoryLegend(categoryData, colors, total);
+}
+
+// Обновление легенды категорий
+function updateCategoryLegend(categoryData, colors, total) {
+    const legend = document.getElementById('categoryLegend');
+    legend.innerHTML = '';
+    
+    categoryData.forEach((category, index) => {
+        const percentage = ((category.revenue / total) * 100).toFixed(1);
+        
+        const legendItem = document.createElement('div');
+        legendItem.className = 'legend-item';
+        legendItem.innerHTML = `
+            <span class="legend-color" style="background: ${colors[index % colors.length]};"></span>
+            <span class="legend-label">${category.name}</span>
+            <span class="legend-value">${percentage}%</span>
+        `;
+        
+        legend.appendChild(legendItem);
+    });
+}
+
+// Рисование мини-графиков в карточках
+function drawMiniCharts(salesData) {
+    if (!salesData || salesData.length === 0) return;
+    
+    // Мини-график выручки
+    drawMiniChart('revenueChart', salesData.map(item => item.revenue), '#10b981');
+    
+    // Мини-график заказов
+    drawMiniChart('ordersChart', salesData.map(item => item.orders), '#3b82f6');
+}
+
+function drawMiniChart(canvasId, data, color) {
+    const canvas = document.getElementById(canvasId);
+    const ctx = canvas.getContext('2d');
+    
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    const maxValue = Math.max(...data) || 1;
+    const stepX = canvas.width / (data.length - 1);
+    
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    
+    data.forEach((value, index) => {
+        const x = stepX * index;
+        const y = canvas.height - (value / maxValue) * canvas.height;
+        
+        if (index === 0) {
+            ctx.moveTo(x, y);
+        } else {
+            ctx.lineTo(x, y);
+        }
+    });
+    
+    ctx.stroke();
+    
+    // Заливка под линией
+    ctx.lineTo(canvas.width, canvas.height);
+    ctx.lineTo(0, canvas.height);
+    ctx.closePath();
+    
+    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    gradient.addColorStop(0, color + '40');
+    gradient.addColorStop(1, color + '10');
+    
+    ctx.fillStyle = gradient;
+    ctx.fill();
+}
+
+// Переключение типа графика
+function switchChartType(type) {
+    currentChartType = type;
+    
+    // Обновляем активную кнопку
+    document.querySelectorAll('.chart-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    // Перерисовываем график
+    if (dashboardData) {
+        drawSalesTrendChart(dashboardData.daily_sales);
+    }
+}
+
+// Обновление таблицы топ товаров
+function updateTopProductsTable(topProducts) {
+    const tbody = document.getElementById('topProductsBody');
+    tbody.innerHTML = '';
+    
+    topProducts.forEach((product, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td class="rank">#${index + 1}</td>
+            <td class="product-name">${product.product__name}</td>
+            <td class="sold-count">${product.total_sold} шт.</td>
+            <td class="revenue">${new Intl.NumberFormat('ru-RU').format(product.total_revenue)} ₽</td>
+            <td class="price">${new Intl.NumberFormat('ru-RU').format(product.product__price)} ₽</td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+// Загрузка уведомлений
+async function loadNotifications() {
+    try {
+        const response = await fetch('/api/notifications/');
+        const data = await response.json();
+        
+        if (data.success) {
+            displayNotifications(data.notifications);
+        }
+    } catch (error) {
+        console.error('Error loading notifications:', error);
+    }
+}
+
+// Отображение уведомлений
+function displayNotifications(notifications) {
+    const container = document.getElementById('notifications');
+    container.innerHTML = '';
+    
+    notifications.forEach(notification => {
+        const notificationEl = document.createElement('div');
+        notificationEl.className = `notification ${notification.type}`;
+        notificationEl.innerHTML = `
+            <div class="notification-icon">
+                ${getNotificationIcon(notification.type)}
+            </div>
+            <div class="notification-content">
+                <strong>${notification.title}</strong>
+                <p>${notification.message}</p>
+            </div>
+            <div class="notification-count">
+                ${notification.count}
+            </div>
+        `;
+        container.appendChild(notificationEl);
+    });
+}
+
+function getNotificationIcon(type) {
+    const icons = {
+        info: 'ℹ️',
+        warning: '⚠️',
+        success: '✅',
+        urgent: '🚨'
+    };
+    return icons[type] || 'ℹ️';
+}
+
+// Экспорт данных
+async function exportData(type) {
+    try {
+        const response = await fetch(`/api/export-data/?type=${type}&format=json`);
+        const data = await response.json();
+        
+        if (data.success) {
+            // Создаем и скачиваем файл
+            const blob = new Blob([JSON.stringify(data.data, null, 2)], {
+                type: 'application/json'
+            });
+            
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${type}_export_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showMessage('Данные экспортированы успешно!', 'success');
+        }
+    } catch (error) {
+        console.error('Error exporting data:', error);
+        showMessage('Ошибка при экспорте данных', 'error');
+    }
+}
+
+// Массовые действия
+async function bulkAction(action) {
+    const selectedProducts = getSelectedProducts();
+    
+    if (selectedProducts.length === 0) {
+        showMessage('Выберите товары для действия', 'warning');
+        return;
+    }
+    
+    try {
+        const response = await fetch('/api/bulk-update-products/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken()
+            },
+            body: JSON.stringify({
+                action: action,
+                product_ids: selectedProducts
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showMessage(data.message, 'success');
+            closeBulkActions();
+            loadDashboardData(); // Обновляем данные
+        } else {
+            showMessage(data.error, 'error');
+        }
+    } catch (error) {
+        console.error('Error performing bulk action:', error);
+        showMessage('Ошибка при выполнении действия', 'error');
+    }
+}
+
+// Обновление остатков
+async function bulkUpdateStock() {
+    const stockValue = document.getElementById('stockValue').value;
+    
+    if (!stockValue) {
+        showMessage('Введите количество', 'warning');
+        return;
+    }
+    
+    const selectedProducts = getSelectedProducts();
+    
+    try {
+        const response = await fetch('/api/bulk-update-products/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken()
+            },
+            body: JSON.stringify({
+                action: 'update_stock',
+                product_ids: selectedProducts,
+                stock_value: parseInt(stockValue)
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showMessage(data.message, 'success');
+            closeBulkActions();
+            loadDashboardData();
+        }
+    } catch (error) {
+        console.error('Error updating stock:', error);
+        showMessage('Ошибка при обновлении остатков', 'error');
+    }
+}
+
+// Обновление цен
+async function bulkUpdatePrice() {
+    const priceMultiplier = document.getElementById('priceMultiplier').value;
+    
+    if (!priceMultiplier) {
+        showMessage('Введите множитель цены', 'warning');
+        return;
+    }
+    
+    const selectedProducts = getSelectedProducts();
+    
+    try {
+        const response = await fetch('/api/bulk-update-products/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken()
+            },
+            body: JSON.stringify({
+                action: 'update_price',
+                product_ids: selectedProducts,
+                price_multiplier: parseFloat(priceMultiplier)
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showMessage(data.message, 'success');
+            closeBulkActions();
+            loadDashboardData();
+        }
+    } catch (error) {
+        console.error('Error updating prices:', error);
+        showMessage('Ошибка при обновлении цен', 'error');
+    }
+}
+
+// Вспомогательные функции
+function getSelectedProducts() {
+    // Здесь должна быть логика получения выбранных товаров
+    // Пока возвращаем пустой массив
+    return [];
+}
+
+function closeBulkActions() {
+    document.getElementById('bulkActionsPanel').style.display = 'none';
+}
+
+function refreshData() {
+    loadDashboardData();
+    loadNotifications();
+    showMessage('Данные обновлены', 'success');
+}
+
+function getCsrfToken() {
+    return document.querySelector('[name=csrfmiddlewaretoken]')?.value || '';
+}
+
+function showMessage(message, type) {
+    // Простое уведомление
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <p>${message}</p>
+        </div>
+    `;
+    
+    document.getElementById('notifications').appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 5000);
+}
+</script>
+{% endblock %}

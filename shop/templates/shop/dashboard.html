@@ -87,12 +87,11 @@
         <!-- Sales Overview -->
         <div class="chart-card sales-overview">
             <div class="chart-header">
-                <h3>Обзор продаж</h3>
+                <h3>📈 Обзор продаж</h3>
                 <p>Продажи за последние 7 дней</p>
                 <div class="chart-tabs">
-                    <button class="tab-btn active">Ежедневно</button>
-                    <button class="tab-btn">Выручка</button>
-                    <button class="tab-btn">Заказы</button>
+                    <button class="tab-btn active" onclick="switchChart('revenue')">Выручка</button>
+                    <button class="tab-btn" onclick="switchChart('orders')">Заказы</button>
                 </div>
             </div>
             <div class="chart-container">
@@ -103,7 +102,7 @@
         <!-- Sales by Category -->
         <div class="chart-card category-chart">
             <div class="chart-header">
-                <h3>Продажи по категориям</h3>
+                <h3>🏷️ Продажи по категориям</h3>
                 <p>Распределение продаж по категориям товаров</p>
             </div>
             <div class="chart-container">
@@ -126,7 +125,7 @@
         <!-- Order Status Stats -->
         <div class="stat-widget">
             <div class="widget-header">
-                <h3>Статусы заказов</h3>
+                <h3>📋 Статусы заказов</h3>
                 <p>Текущее состояние заказов</p>
             </div>
             <div class="status-stats">
@@ -144,7 +143,7 @@
         <!-- Top Products -->
         <div class="stat-widget">
             <div class="widget-header">
-                <h3>Топ товары</h3>
+                <h3>🏆 Топ товары</h3>
                 <p>Самые продаваемые товары</p>
             </div>
             <div class="top-products">
@@ -167,7 +166,7 @@
         <!-- Low Stock Products -->
         <div class="stat-widget">
             <div class="widget-header">
-                <h3>Низкий остаток</h3>
+                <h3>⚠️ Низкий остаток</h3>
                 <p>Товары требующие пополнения</p>
             </div>
             <div class="low-stock-products">
@@ -181,7 +180,7 @@
                 </div>
                 {% empty %}
                 <div class="empty-state">
-                    <p>Все товары в достатке</p>
+                    <p>✅ Все товары в достатке</p>
                 </div>
                 {% endfor %}
             </div>
@@ -191,7 +190,7 @@
     <!-- Recent Sales -->
     <div class="recent-sales-card">
         <div class="card-header">
-            <h3>Последние продажи</h3>
+            <h3>🛒 Последние продажи</h3>
             <p>Вы совершили {{ recent_orders_count }} продаж в этом месяце.</p>
         </div>
         <div class="sales-list">
@@ -218,7 +217,23 @@
 </div>
 
 <script>
-// Sales Chart
+// Данные для графиков
+const salesData = {{ sales_by_day|safe }};
+let currentChartType = 'revenue';
+
+// Функция для переключения типа графика
+function switchChart(type) {
+    currentChartType = type;
+    
+    // Обновляем активную кнопку
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    // Перерисовываем график
+    drawSalesChart();
+}
+
+// Функция для рисования графика продаж
 function drawSalesChart() {
     const canvas = document.getElementById('salesChart');
     const ctx = canvas.getContext('2d');
@@ -227,25 +242,16 @@ function drawSalesChart() {
     
     ctx.clearRect(0, 0, width, height);
     
-    const data = [
-        {% for day in sales_by_day %}
-            {{ day.revenue|default:0 }},
-        {% endfor %}
-    ];
-    
-    const labels = [
-        {% for day in sales_by_day %}
-            '{{ day.date }}',
-        {% endfor %}
-    ];
-    
-    if (data.length === 0 || data.every(val => val === 0)) {
+    if (!salesData || salesData.length === 0) {
         ctx.fillStyle = '#9CA3AF';
         ctx.font = '16px Inter';
         ctx.textAlign = 'center';
         ctx.fillText('Нет данных для отображения', width/2, height/2);
         return;
     }
+    
+    const data = salesData.map(item => currentChartType === 'revenue' ? item.revenue : item.orders);
+    const labels = salesData.map(item => item.date);
     
     const maxValue = Math.max(...data) || 1;
     const padding = 60;
@@ -254,36 +260,52 @@ function drawSalesChart() {
     const barWidth = chartWidth / data.length * 0.6;
     const barSpacing = chartWidth / data.length * 0.4;
     
-    // Draw bars
+    // Рисуем столбцы
     data.forEach((value, index) => {
         const barHeight = (value / maxValue) * chartHeight;
         const x = padding + index * (barWidth + barSpacing) + barSpacing / 2;
         const y = height - padding - barHeight;
         
-        // Gradient
+        // Градиент
         const gradient = ctx.createLinearGradient(0, y, 0, y + barHeight);
-        gradient.addColorStop(0, '#4F46E5');
-        gradient.addColorStop(1, '#3B82F6');
+        if (currentChartType === 'revenue') {
+            gradient.addColorStop(0, '#10B981');
+            gradient.addColorStop(1, '#059669');
+        } else {
+            gradient.addColorStop(0, '#3B82F6');
+            gradient.addColorStop(1, '#2563EB');
+        }
         
         ctx.fillStyle = gradient;
         ctx.fillRect(x, y, barWidth, barHeight);
         
-        // Labels
+        // Подписи дат
         ctx.fillStyle = '#6B7280';
         ctx.font = '12px Inter';
         ctx.textAlign = 'center';
         ctx.fillText(labels[index], x + barWidth/2, height - 20);
         
-        // Values
+        // Значения
         if (value > 0) {
             ctx.fillStyle = '#374151';
             ctx.font = 'bold 12px Inter';
-            ctx.fillText(value + '₽', x + barWidth/2, y - 10);
+            const displayValue = currentChartType === 'revenue' ? value + '₽' : value;
+            ctx.fillText(displayValue, x + barWidth/2, y - 10);
         }
     });
+    
+    // Заголовок оси Y
+    ctx.save();
+    ctx.translate(20, height/2);
+    ctx.rotate(-Math.PI/2);
+    ctx.fillStyle = '#6B7280';
+    ctx.font = '14px Inter';
+    ctx.textAlign = 'center';
+    ctx.fillText(currentChartType === 'revenue' ? 'Выручка (₽)' : 'Количество заказов', 0, 0);
+    ctx.restore();
 }
 
-// Category Chart (Donut)
+// Функция для рисования круговой диаграммы категорий
 function drawCategoryChart() {
     const canvas = document.getElementById('categoryChart');
     const ctx = canvas.getContext('2d');
@@ -294,14 +316,14 @@ function drawCategoryChart() {
     
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    const data = [
+    const categoryData = [
         {% for category in category_stats|slice:":4" %}
             {{ category.percentage }},
         {% endfor %}
     ];
     
     const colors = ['#4F46E5', '#10B981', '#F59E0B', '#EF4444'];
-    const total = data.reduce((a, b) => a + b, 0);
+    const total = categoryData.reduce((a, b) => a + b, 0);
     
     if (total === 0) {
         ctx.fillStyle = '#9CA3AF';
@@ -313,10 +335,10 @@ function drawCategoryChart() {
     
     let currentAngle = -Math.PI / 2;
     
-    data.forEach((value, index) => {
+    categoryData.forEach((value, index) => {
         const sliceAngle = (value / total) * 2 * Math.PI;
         
-        // Draw slice
+        // Рисуем сегмент
         ctx.beginPath();
         ctx.arc(centerX, centerY, radius, currentAngle, currentAngle + sliceAngle);
         ctx.arc(centerX, centerY, innerRadius, currentAngle + sliceAngle, currentAngle, true);
@@ -327,7 +349,7 @@ function drawCategoryChart() {
         currentAngle += sliceAngle;
     });
     
-    // Center text
+    // Текст в центре
     ctx.fillStyle = '#374151';
     ctx.font = 'bold 24px Inter';
     ctx.textAlign = 'center';
@@ -337,10 +359,23 @@ function drawCategoryChart() {
     ctx.fillText('Продажи', centerX, centerY + 15);
 }
 
-// Initialize charts
+// Инициализация графиков
 document.addEventListener('DOMContentLoaded', function() {
     drawSalesChart();
     drawCategoryChart();
+    
+    // Обновление данных каждые 30 секунд
+    setInterval(function() {
+        fetch('{% url "shop:dashboard_api" %}')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Обновляем данные и перерисовываем графики
+                    console.log('Dashboard data updated');
+                }
+            })
+            .catch(error => console.error('Error updating dashboard:', error));
+    }, 30000);
 });
 </script>
 {% endblock %}

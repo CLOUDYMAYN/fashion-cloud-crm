@@ -4,80 +4,70 @@ from shop.models import Category, Product, Cart, CartItem, Order, OrderItem
 
 User = get_user_model()
 
+
 class UserModelTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
-            username='testuser',
-            email='test@example.com',
-            password='testpass123'
+            username="testuser", email="test@example.com", password="testpass123"
         )
 
     def test_user_creation(self):
-        self.assertEqual(self.user.username, 'testuser')
-        self.assertEqual(self.user.email, 'test@example.com')
-        self.assertEqual(self.user.role, 'customer')
+        self.assertEqual(self.user.username, "testuser")
+        self.assertEqual(self.user.email, "test@example.com")
+        self.assertEqual(self.user.role, "customer")
 
     def test_is_admin_user(self):
         self.assertFalse(self.user.is_admin_user())
-        
-        self.user.role = 'manager'
+
+        self.user.role = "manager"
         self.assertTrue(self.user.is_admin_user())
+
 
 class ProductModelTest(TestCase):
     def setUp(self):
         self.category = Category.objects.create(
-            name='Test Category',
-            slug='test-category'
+            name="Test Category", slug="test-category"
         )
         self.product = Product.objects.create(
-            name='Test Product',
-            slug='test-product',
+            name="Test Product",
+            slug="test-product",
             category=self.category,
-            description='Test description',
+            description="Test description",
             price=100.00,
-            stock=10
+            stock=10,
         )
 
     def test_product_creation(self):
-        self.assertEqual(self.product.name, 'Test Product')
+        self.assertEqual(self.product.name, "Test Product")
         self.assertEqual(self.product.price, 100.00)
         self.assertTrue(self.product.available)
 
     def test_product_str(self):
-        self.assertEqual(str(self.product), 'Test Product')
+        self.assertEqual(str(self.product), "Test Product")
+
 
 class CartModelTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
-            username='testuser',
-            password='testpass123'
+            username="testuser", password="testpass123"
         )
         self.category = Category.objects.create(
-            name='Test Category',
-            slug='test-category'
+            name="Test Category", slug="test-category"
         )
         self.product = Product.objects.create(
-            name='Test Product',
-            slug='test-product',
+            name="Test Product",
+            slug="test-product",
             category=self.category,
-            description='Test description',
+            description="Test description",
             price=100.00,
-            stock=10
+            stock=10,
         )
         self.cart = Cart.objects.create(user=self.user)
 
     def test_cart_total_price(self):
-        CartItem.objects.create(
-            cart=self.cart,
-            product=self.product,
-            quantity=2
-        )
+        CartItem.objects.create(cart=self.cart, product=self.product, quantity=2)
         self.assertEqual(self.cart.get_total_price(), 200.00)
 
     def test_cart_total_items(self):
-        CartItem.objects.create(
-            cart=self.cart,
-            product=self.product,
-            quantity=3
-        )
+        CartItem.objects.create(cart=self.cart, product=self.product, quantity=3)
         self.assertEqual(self.cart.get_total_items(), 3)
