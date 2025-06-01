@@ -17,7 +17,7 @@ command -v kubectl >/dev/null 2>&1 || { echo -e "${RED}❌ kubectl is required b
 # Set variables
 ENVIRONMENT=${1:-staging}
 IMAGE_TAG=${2:-latest}
-NAMESPACE="crm-shop-${ENVIRONMENT}"
+NAMESPACE="fashion-cloud-crm-${ENVIRONMENT}"
 
 echo -e "${YELLOW}📦 Environment: ${ENVIRONMENT}${NC}"
 echo -e "${YELLOW}🏷️  Image tag: ${IMAGE_TAG}${NC}"
@@ -43,7 +43,7 @@ kubectl apply -f k8s/redis.yml -n ${NAMESPACE}
 
 # Update deployment with new image
 echo -e "${YELLOW}🔄 Updating deployment...${NC}"
-sed "s|your-registry/crm-shop:latest|your-registry/crm-shop:${IMAGE_TAG}|g" k8s/deployment.yml | kubectl apply -f - -n ${NAMESPACE}
+sed "s|your-registry/crm-shop:latest|your-dockerhub-username/fashion-cloud-crm:${IMAGE_TAG}|g" k8s/deployment.yml | kubectl apply -f - -n ${NAMESPACE}
 
 # Wait for deployment to be ready
 echo -e "${YELLOW}⏳ Waiting for deployment to be ready...${NC}"

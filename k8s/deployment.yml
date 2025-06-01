@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: web
-        image: your-registry/crm-shop:latest
+        image: your-dockerhub-username/fashion-cloud-crm:latest
         ports:
         - containerPort: 8000
         env:
