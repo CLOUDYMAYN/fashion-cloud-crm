@@ -10,7 +10,6 @@ class Command(BaseCommand):
     help = "Создает тестовых пользователей и данные"
 
     def handle(self, *args, **options):
-        # Создаем босса
         boss, created = User.objects.get_or_create(
             username="boss",
             defaults={
@@ -26,7 +25,7 @@ class Command(BaseCommand):
             boss.set_password("boss123")
             boss.save()
             self.stdout.write(
-                self.style.SUCCESS(f"Создан босс: username=boss, password=boss123")
+                self.style.SUCCESS("Создан босс: username=boss, password=boss123")
             )
         else:
             self.stdout.write(f"Босс уже существует: {boss.username}")
