@@ -1,4 +1,3 @@
-from .base import *
 
 DEBUG = False
 SECRET_KEY = 'test-secret-key-for-ci'
@@ -15,4 +14,3 @@ DATABASES = {
     }
 }
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
