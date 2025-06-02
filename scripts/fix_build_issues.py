@@ -5,8 +5,8 @@ Fix common build issues in the project.
 This script checks and fixes common build issues in the project.
 """
 import os
-import sys
 import subprocess
+import sys
 from pathlib import Path
 
 project_root = Path(__file__).resolve().parent.parent
