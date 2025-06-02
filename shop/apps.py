@@ -6,3 +6,4 @@ class ShopConfig(AppConfig):
     name = "shop"
 
     def ready(self):
+        pass

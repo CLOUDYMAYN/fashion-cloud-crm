@@ -46,7 +46,7 @@ class Command(BaseCommand):
             manager.save()
             self.stdout.write(
                 self.style.SUCCESS(
-                    f"Создан менеджер: username=manager, password=manager123"
+                    "Создан менеджер: username=manager, password=manager123"
                 )
             )
         else:
@@ -67,7 +67,7 @@ class Command(BaseCommand):
             customer.save()
             self.stdout.write(
                 self.style.SUCCESS(
-                    f"Создан покупатель: username=customer, password=customer123"
+                    "Создан покупатель: username=customer, password=customer123"
                 )
             )
         else:

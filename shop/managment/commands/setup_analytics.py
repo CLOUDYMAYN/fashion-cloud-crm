@@ -88,7 +88,7 @@ class Command(BaseCommand):
                 order.total_price = total_price
                 order.save()
 
-        self.stdout.write(f"📊 Создано дополнительных заказов для аналитики")
+        self.stdout.write("📊 Создано дополнительных заказов для аналитики")
 
     def update_stock_levels(self):
         """Обновляет остатки товаров для демонстрации уведомлений"""

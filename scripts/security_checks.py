@@ -18,24 +18,32 @@ sys.path.append(str(project_root))
 # Import Django settings
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "crm_shop.settings")
 django.setup()
+
+
 def check_debug_mode():
     """Check if DEBUG is set to False in production."""
     if settings.DEBUG:
         print("WARNING: DEBUG is set to True. This should be False in production.")
         return False
     return True
+
+
 def check_secret_key():
     """Check if SECRET_KEY is properly set."""
     if settings.SECRET_KEY == "your-secret-key-here" or len(settings.SECRET_KEY) < 32:
         print("WARNING: SECRET_KEY is not properly set.")
         return False
     return True
+
+
 def check_allowed_hosts():
     """Check if ALLOWED_HOSTS is properly set."""
     if settings.ALLOWED_HOSTS == ["*"] or not settings.ALLOWED_HOSTS:
         print("WARNING: ALLOWED_HOSTS is not properly set.")
         return False
     return True
+
+
 def check_secure_settings():
     """Check if secure settings are properly set."""
     secure_settings = True
@@ -49,6 +57,8 @@ def check_secure_settings():
         print("WARNING: SECURE_SSL_REDIRECT is not set to True.")
         secure_settings = False
     return secure_settings
+
+
 def run_bandit():
     """Run bandit security check."""
     try:
@@ -65,6 +75,8 @@ def run_bandit():
     except FileNotFoundError:
         print("WARNING: Bandit is not installed. Install it with 'pip install bandit'.")
         return False
+
+
 def run_safety():
     """Run safety check on dependencies."""
     try:
@@ -81,6 +93,8 @@ def run_safety():
     except FileNotFoundError:
         print("WARNING: Safety is not installed. Install it with 'pip install safety'.")
         return False
+
+
 def main():
     """Run all security checks."""
     checks = [

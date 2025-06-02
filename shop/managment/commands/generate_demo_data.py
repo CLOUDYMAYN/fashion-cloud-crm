@@ -250,7 +250,7 @@ class Command(BaseCommand):
             try:
                 category = Category.objects.get(slug=prod_data["category"])
                 product, created = Product.objects.get_or_create(
-                    slug=f"{prod_data['category']}-{i+1}",
+                    slug=f"{prod_data['category']}-{i + 1}",
                     defaults={
                         "name": prod_data["name"],
                         "category": category,
@@ -317,7 +317,7 @@ class Command(BaseCommand):
             order.save()
 
             if i % 10 == 0:
-                self.stdout.write(f'📦 Создано заказов: {i+1}/{options["orders"]}')
+                self.stdout.write(f'📦 Создано заказов: {i + 1}/{options["orders"]}')
 
         # Статистика
         total_orders = Order.objects.count()
@@ -326,7 +326,7 @@ class Command(BaseCommand):
         total_revenue = Order.objects.aggregate(total=Sum("total_price"))["total"] or 0
 
         self.stdout.write(self.style.SUCCESS("\n🎉 Генерация данных завершена!"))
-        self.stdout.write(f"📊 Статистика:")
+        self.stdout.write("📊 Статистика:")
         self.stdout.write(f"   👥 Покупателей: {total_customers}")
         self.stdout.write(f"   📦 Товаров: {total_products}")
         self.stdout.write(f"   🛒 Заказов: {total_orders}")

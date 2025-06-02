@@ -8,8 +8,9 @@ import os
 import sys
 import subprocess
 from pathlib import Path
-# Get the project root directory
 project_root = Path(__file__).resolve().parent.parent
+
+
 def check_docker_build():
     """Check if Docker build works."""
     print("Checking Docker build...")
@@ -24,6 +25,8 @@ def check_docker_build():
         print(result.stderr)
         return False
     return True
+
+
 def check_requirements():
     """Check if all requirements can be installed."""
     print("Checking requirements installation...")
@@ -46,6 +49,8 @@ def check_requirements():
         print(result.stderr)
         return False
     return True
+
+
 def check_migrations():
     """Check if migrations can be applied."""
     print("Checking migrations...")
@@ -67,20 +72,19 @@ def check_migrations():
         print(result.stderr)
         return False
     return True
+
+
 def main():
     """Run all build checks."""
     all_passed = True
-    # Check Docker build
     try:
         if not check_docker_build():
             all_passed = False
     except FileNotFoundError:
         print("WARNING: Docker is not installed or not in PATH.")
         all_passed = False
-    # Check requirements
     if not check_requirements():
         all_passed = False
-    # Check migrations
     if not check_migrations():
         all_passed = False
     if all_passed:
@@ -89,5 +93,6 @@ def main():
     else:
         print("Some build checks failed. Please fix the issues.")
         return 1
+
 if __name__ == "__main__":
     sys.exit(main())

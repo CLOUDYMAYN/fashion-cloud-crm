@@ -8,14 +8,20 @@ import subprocess
 from pathlib import Path
 # Get the project root directory
 project_root = Path(__file__).resolve().parent.parent
+
+
 def run_black():
     """Run black to format Python code."""
     print("Running black to format Python code...")
     subprocess.run(["black", str(project_root)], check=False)
+
+
 def run_isort():
     """Run isort to sort imports."""
     print("Running isort to sort imports...")
     subprocess.run(["isort", str(project_root)], check=False)
+
+
 def run_flake8():
     """Run flake8 to check for linting errors."""
     print("Running flake8 to check for linting errors...")
@@ -30,6 +36,8 @@ def run_flake8():
         print(result.stdout)
     else:
         print("No flake8 issues found!")
+
+
 def run_mypy():
     """Run mypy to check for type errors."""
     print("Running mypy to check for type errors...")
@@ -44,6 +52,8 @@ def run_mypy():
         print(result.stdout)
     else:
         print("No mypy issues found!")
+
+
 def main():
     """Run all linting tools."""
     # Make sure the required tools are installed
@@ -60,5 +70,6 @@ def main():
     run_mypy()
     print("\nLinting fixes completed. Please review the changes and commit them.")
     return 0
+
 if __name__ == "__main__":
     exit(main())
