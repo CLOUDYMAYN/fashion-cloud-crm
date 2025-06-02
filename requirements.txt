@@ -12,3 +12,4 @@ dj-database-url==2.1.0
 Django>=4.0
 
 Django>=4.0
+Django>=4.0
