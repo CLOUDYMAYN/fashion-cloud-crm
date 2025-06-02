@@ -8,19 +8,23 @@ import shutil
 
 project_root = Path(__file__).resolve().parent.parent
 
+
 def safe_run(cmd, **kwargs):
     if shutil.which(cmd[0]) is None:
         print(f"WARNING: {cmd[0]} not found in PATH")
         return subprocess.CompletedProcess(cmd, returncode=1)
     return subprocess.run(cmd, **kwargs)
 
+
 def run_black():
     print("Running black...")
     safe_run(["black", str(project_root)])
 
+
 def run_isort():
     print("Running isort...")
     safe_run(["isort", str(project_root)])
+
 
 def run_flake8():
     print("Running flake8...")
@@ -30,6 +34,7 @@ def run_flake8():
     else:
         print("No flake8 issues.")
 
+
 def run_mypy():
     print("Running mypy...")
     result = safe_run(["mypy", str(project_root)], capture_output=True, text=True)
@@ -37,6 +42,7 @@ def run_mypy():
         print("Mypy issues:\n" + result.stdout)
     else:
         print("No mypy issues.")
+
 
 def main():
     for tool in ["black", "isort", "flake8", "mypy"]:
@@ -49,6 +55,7 @@ def main():
     run_mypy()
     print("\nLinting fixes complete.")
     return 0
+
 
 if __name__ == "__main__":
     exit(main())

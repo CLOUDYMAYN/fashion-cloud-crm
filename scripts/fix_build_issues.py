@@ -10,11 +10,13 @@ import shutil
 
 project_root = Path(__file__).resolve().parent.parent
 
+
 def safe_run(cmd, **kwargs):
     if shutil.which(cmd[0]) is None:
         print(f"WARNING: {cmd[0]} not found in PATH")
         return subprocess.CompletedProcess(cmd, returncode=1)
     return subprocess.run(cmd, **kwargs)
+
 
 def check_docker_build():
     print("Checking Docker build...")
@@ -24,6 +26,7 @@ def check_docker_build():
         print(result.stderr)
         return False
     return True
+
 
 def check_requirements():
     print("Checking requirements installation...")
@@ -40,6 +43,7 @@ def check_requirements():
         return False
     return True
 
+
 def check_migrations():
     print("Checking migrations...")
     os.environ.update({
@@ -55,6 +59,7 @@ def check_migrations():
         return False
     return True
 
+
 def main():
     all_passed = True
     if not check_docker_build():
@@ -65,6 +70,7 @@ def main():
         all_passed = False
     print("All build checks passed!" if all_passed else "Some build checks failed.")
     return 0 if all_passed else 1
+
 
 if __name__ == "__main__":
     sys.exit(main())
