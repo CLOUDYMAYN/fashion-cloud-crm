@@ -24,9 +24,7 @@ class Command(BaseCommand):
         if created:
             boss.set_password("boss123")
             boss.save()
-            self.stdout.write(
-                self.style.SUCCESS("Создан босс: username=boss, password=boss123")
-            )
+            self.stdout.write(self.style.SUCCESS("Создан босс: username=boss, password=boss123"))
         else:
             self.stdout.write(f"Босс уже существует: {boss.username}")
 
@@ -45,9 +43,7 @@ class Command(BaseCommand):
             manager.set_password("manager123")
             manager.save()
             self.stdout.write(
-                self.style.SUCCESS(
-                    "Создан менеджер: username=manager, password=manager123"
-                )
+                self.style.SUCCESS("Создан менеджер: username=manager, password=manager123")
             )
         else:
             self.stdout.write(f"Менеджер уже существует: {manager.username}")
@@ -66,9 +62,7 @@ class Command(BaseCommand):
             customer.set_password("customer123")
             customer.save()
             self.stdout.write(
-                self.style.SUCCESS(
-                    "Создан покупатель: username=customer, password=customer123"
-                )
+                self.style.SUCCESS("Создан покупатель: username=customer, password=customer123")
             )
         else:
             self.stdout.write(f"Покупатель уже существует: {customer.username}")
@@ -151,6 +145,4 @@ class Command(BaseCommand):
         self.stdout.write("Босс: username=boss, password=boss123")
         self.stdout.write("Менеджер: username=manager, password=manager123")
         self.stdout.write("Покупатель: username=customer, password=customer123")
-        self.stdout.write(
-            "\nДля входа в админку используйте аккаунт босса или менеджера"
-        )
+        self.stdout.write("\nДля входа в админку используйте аккаунт босса или менеджера")

@@ -42,9 +42,7 @@ class NotificationService:
             return True
 
         except Exception as e:
-            logger.error(
-                f"Failed to send order confirmation for order #{order.id}: {str(e)}"
-            )
+            logger.error(f"Failed to send order confirmation for order #{order.id}: {str(e)}")
             return False
 
     @staticmethod
@@ -81,9 +79,7 @@ class NotificationService:
                 return True
 
         except Exception as e:
-            logger.error(
-                f"Failed to send low stock alert for product {product.name}: {str(e)}"
-            )
+            logger.error(f"Failed to send low stock alert for product {product.name}: {str(e)}")
             return False
 
     @staticmethod
@@ -97,9 +93,7 @@ class NotificationService:
 
             subject = f"🛒 Новый заказ #{order.id} - FashionStore"
 
-            html_message = render_to_string(
-                "shop/emails/new_order_alert.html", {"order": order}
-            )
+            html_message = render_to_string("shop/emails/new_order_alert.html", {"order": order})
 
             plain_message = strip_tags(html_message)
 
@@ -119,7 +113,5 @@ class NotificationService:
                 return True
 
         except Exception as e:
-            logger.error(
-                f"Failed to send new order alert for order #{order.id}: {str(e)}"
-            )
+            logger.error(f"Failed to send new order alert for order #{order.id}: {str(e)}")
             return False

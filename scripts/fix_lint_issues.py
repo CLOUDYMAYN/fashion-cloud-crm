@@ -62,9 +62,7 @@ def main():
         try:
             subprocess.run([tool, "--version"], capture_output=True, check=True)
         except (FileNotFoundError, subprocess.CalledProcessError):
-            print(
-                f"WARNING: {tool} is not installed. Install it with 'pip install {tool}'."
-            )
+            print(f"WARNING: {tool} is not installed. Install it with 'pip install {tool}'.")
             return 1
     # Run the tools
     run_black()

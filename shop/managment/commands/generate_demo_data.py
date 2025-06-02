@@ -270,9 +270,7 @@ class Command(BaseCommand):
         products = Product.objects.filter(available=True)
 
         if not customers.exists() or not products.exists():
-            self.stdout.write(
-                self.style.ERROR("❌ Недостаточно данных для создания заказов")
-            )
+            self.stdout.write(self.style.ERROR("❌ Недостаточно данных для создания заказов"))
             return
 
         statuses = ["pending", "processing", "shipped", "delivered", "cancelled"]
@@ -333,7 +331,5 @@ class Command(BaseCommand):
         self.stdout.write(f"   💰 Общая выручка: {total_revenue} ₽")
 
         self.stdout.write(
-            self.style.SUCCESS(
-                "\n✨ Теперь можно протестировать dashboard с реальными данными!"
-            )
+            self.style.SUCCESS("\n✨ Теперь можно протестировать dashboard с реальными данными!")
         )

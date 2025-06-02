@@ -21,8 +21,7 @@ class RequestLoggingMiddleware(MiddlewareMixin):
             # Логируем медленные запросы (> 1 секунды)
             if duration > 1.0:
                 logger.warning(
-                    f"Slow request: {request.method} {request.path} "
-                    f"took {duration:.2f}s"
+                    f"Slow request: {request.method} {request.path} " f"took {duration:.2f}s"
                 )
 
         return response

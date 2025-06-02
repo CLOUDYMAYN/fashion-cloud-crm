@@ -37,16 +37,16 @@ class Command(BaseCommand):
         # Основная статистика
         total_orders = Order.objects.filter(created_at__gte=start_date).count()
         total_revenue = (
-            Order.objects.filter(created_at__gte=start_date).aggregate(
-                total=Sum("total_price")
-            )["total"]
+            Order.objects.filter(created_at__gte=start_date).aggregate(total=Sum("total_price"))[
+                "total"
+            ]
             or 0
         )
 
         avg_order_value = (
-            Order.objects.filter(created_at__gte=start_date).aggregate(
-                avg=Avg("total_price")
-            )["avg"]
+            Order.objects.filter(created_at__gte=start_date).aggregate(avg=Avg("total_price"))[
+                "avg"
+            ]
             or 0
         )
 
@@ -67,9 +67,7 @@ class Command(BaseCommand):
             revenue = (
                 OrderItem.objects.filter(
                     order__created_at__gte=start_date, product__category=category
-                ).aggregate(total=Sum("quantity") * Sum("price") / Sum("quantity"))[
-                    "total"
-                ]
+                ).aggregate(total=Sum("quantity") * Sum("price") / Sum("quantity"))["total"]
                 or 0
             )
 
@@ -82,17 +80,14 @@ class Command(BaseCommand):
             day_start = day.replace(hour=0, minute=0, second=0, microsecond=0)
             day_end = day_start + timedelta(days=1)
 
-            day_orders = Order.objects.filter(
-                created_at__gte=day_start, created_at__lt=day_end
-            )
+            day_orders = Order.objects.filter(created_at__gte=day_start, created_at__lt=day_end)
 
             daily_stats.append(
                 {
                     "date": day.strftime("%Y-%m-%d"),
                     "orders": day_orders.count(),
                     "revenue": float(
-                        day_orders.aggregate(Sum("total_price"))["total_price__sum"]
-                        or 0
+                        day_orders.aggregate(Sum("total_price"))["total_price__sum"] or 0
                     ),
                 }
             )
@@ -100,9 +95,7 @@ class Command(BaseCommand):
         # Статистика по статусам
         status_stats = []
         for status_code, status_name in Order.STATUS_CHOICES:
-            count = Order.objects.filter(
-                created_at__gte=start_date, status=status_code
-            ).count()
+            count = Order.objects.filter(created_at__gte=start_date, status=status_code).count()
             status_stats.append({"status": status_name, "count": count})
 
         # Формирование отчета
@@ -152,15 +145,11 @@ class Command(BaseCommand):
         # Топ товары
         self.stdout.write("\n🏆 ТОП-5 ТОВАРОВ:")
         for i, product in enumerate(data["top_products"][:5], 1):
-            self.stdout.write(
-                f"   {i}. {product['product__name']} - {product['total_sold']} шт."
-            )
+            self.stdout.write(f"   {i}. {product['product__name']} - {product['total_sold']} шт.")
 
         # Категории
         self.stdout.write("\n🏷️ ПРОДАЖИ ПО КАТЕГОРИЯМ:")
-        sorted_categories = sorted(
-            data["category_stats"], key=lambda x: x["revenue"], reverse=True
-        )
+        sorted_categories = sorted(data["category_stats"], key=lambda x: x["revenue"], reverse=True)
         for category in sorted_categories[:5]:
             self.stdout.write(f"   • {category['name']}: {category['revenue']:,.0f} ₽")
 

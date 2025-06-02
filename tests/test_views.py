@@ -10,15 +10,11 @@ User = get_user_model()
 class ViewsTestCase(TestCase):
     def setUp(self):
         self.client = Client()
-        self.user = User.objects.create_user(
-            username="testuser", password="testpass123"
-        )
+        self.user = User.objects.create_user(username="testuser", password="testpass123")
         self.admin_user = User.objects.create_user(
             username="admin", password="adminpass123", role="manager"
         )
-        self.category = Category.objects.create(
-            name="Test Category", slug="test-category"
-        )
+        self.category = Category.objects.create(name="Test Category", slug="test-category")
         self.product = Product.objects.create(
             name="Test Product",
             slug="test-product",
@@ -39,9 +35,7 @@ class ViewsTestCase(TestCase):
         self.assertContains(response, "Test Product")
 
     def test_product_detail_view(self):
-        response = self.client.get(
-            reverse("shop:product_detail", args=[self.product.slug])
-        )
+        response = self.client.get(reverse("shop:product_detail", args=[self.product.slug]))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.product.name)
 

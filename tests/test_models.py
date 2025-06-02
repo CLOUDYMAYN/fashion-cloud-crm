@@ -26,9 +26,7 @@ class UserModelTest(TestCase):
 
 class ProductModelTest(TestCase):
     def setUp(self):
-        self.category = Category.objects.create(
-            name="Test Category", slug="test-category"
-        )
+        self.category = Category.objects.create(name="Test Category", slug="test-category")
         self.product = Product.objects.create(
             name="Test Product",
             slug="test-product",
@@ -49,12 +47,8 @@ class ProductModelTest(TestCase):
 
 class CartModelTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(
-            username="testuser", password="testpass123"
-        )
-        self.category = Category.objects.create(
-            name="Test Category", slug="test-category"
-        )
+        self.user = User.objects.create_user(username="testuser", password="testpass123")
+        self.category = Category.objects.create(name="Test Category", slug="test-category")
         self.product = Product.objects.create(
             name="Test Product",
             slug="test-product",

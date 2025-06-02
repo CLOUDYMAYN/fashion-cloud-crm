@@ -31,9 +31,7 @@ class Command(BaseCommand):
         products = Product.objects.filter(available=True)
 
         if not customers.exists() or not products.exists():
-            self.stdout.write(
-                self.style.WARNING("⚠️ Недостаточно данных для создания заказов")
-            )
+            self.stdout.write(self.style.WARNING("⚠️ Недостаточно данных для создания заказов"))
             return
 
         # Создаем заказы за последние 90 дней с различными трендами
@@ -50,11 +48,9 @@ class Command(BaseCommand):
 
                 order = Order.objects.create(
                     user=customer,
-                    first_name=customer.first_name
-                    or f"Покупатель{random.randint(1, 100)}",
+                    first_name=customer.first_name or f"Покупатель{random.randint(1, 100)}",
                     last_name=customer.last_name or f"Тестовый{random.randint(1, 100)}",
-                    email=customer.email
-                    or f"test{random.randint(1, 1000)}@example.com",
+                    email=customer.email or f"test{random.randint(1, 1000)}@example.com",
                     phone=f"+7{random.randint(9000000000, 9999999999)}",
                     address=f"ул. Тестовая, д. {random.randint(1, 100)}",
                     city="Москва",
@@ -71,9 +67,7 @@ class Command(BaseCommand):
                 num_items = random.randint(1, 4)
                 total_price = Decimal("0")
 
-                selected_products = random.sample(
-                    list(products), min(num_items, len(products))
-                )
+                selected_products = random.sample(list(products), min(num_items, len(products)))
 
                 for product in selected_products:
                     quantity = random.randint(1, 3)

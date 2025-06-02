@@ -167,9 +167,7 @@ def dashboard(request):
     # Статистика за последние 30 дней
     thirty_days_ago = timezone.now() - timedelta(days=30)
     recent_orders = Order.objects.filter(created_at__gte=thirty_days_ago)
-    recent_revenue = (
-        recent_orders.aggregate(Sum("total_price"))["total_price__sum"] or 0
-    )
+    recent_revenue = recent_orders.aggregate(Sum("total_price"))["total_price__sum"] or 0
     recent_orders_count = recent_orders.count()
 
     # Продажи по дням (последние 7 дней)
@@ -179,26 +177,20 @@ def dashboard(request):
         day_start = day.replace(hour=0, minute=0, second=0, microsecond=0)
         day_end = day_start + timedelta(days=1)
 
-        day_orders = Order.objects.filter(
-            created_at__gte=day_start, created_at__lt=day_end
-        )
+        day_orders = Order.objects.filter(created_at__gte=day_start, created_at__lt=day_end)
 
         sales_by_day.append(
             {
                 "date": day.strftime("%d.%m"),
                 "orders": day_orders.count(),
-                "revenue": float(
-                    day_orders.aggregate(Sum("total_price"))["total_price__sum"] or 0
-                ),
+                "revenue": float(day_orders.aggregate(Sum("total_price"))["total_price__sum"] or 0),
             }
         )
 
     sales_by_day.reverse()
 
     # Последние заказы
-    recent_orders_list = Order.objects.select_related("user").order_by("-created_at")[
-        :10
-    ]
+    recent_orders_list = Order.objects.select_related("user").order_by("-created_at")[:10]
 
     # Статистика по категориям (реальные данные)
     category_stats = []
@@ -206,17 +198,13 @@ def dashboard(request):
 
     for category in Category.objects.all():
         sold_items = (
-            OrderItem.objects.filter(product__category=category).aggregate(
-                total=Sum("quantity")
-            )["total"]
+            OrderItem.objects.filter(product__category=category).aggregate(total=Sum("quantity"))[
+                "total"
+            ]
             or 0
         )
 
-        percentage = (
-            round((sold_items / total_sold_items) * 100, 1)
-            if total_sold_items > 0
-            else 0
-        )
+        percentage = round((sold_items / total_sold_items) * 100, 1) if total_sold_items > 0 else 0
 
         category_stats.append(
             {"name": category.name, "percentage": percentage, "sold_items": sold_items}
@@ -236,17 +224,13 @@ def dashboard(request):
     )
 
     # Товары с низким остатком (меньше 5 штук)
-    low_stock_products = Product.objects.filter(stock__lt=5, available=True).order_by(
-        "stock"
-    )[:5]
+    low_stock_products = Product.objects.filter(stock__lt=5, available=True).order_by("stock")[:5]
 
     # Статистика по статусам заказов
     order_status_stats = []
     for status_code, status_name in Order.STATUS_CHOICES:
         count = Order.objects.filter(status=status_code).count()
-        order_status_stats.append(
-            {"status": status_name, "count": count, "code": status_code}
-        )
+        order_status_stats.append({"status": status_name, "count": count, "code": status_code})
 
     # Средний чек
     avg_order_value = Order.objects.aggregate(avg=Avg("total_price"))["avg"] or 0
@@ -256,9 +240,7 @@ def dashboard(request):
     prev_month_orders = Order.objects.filter(
         created_at__gte=prev_month_start, created_at__lt=thirty_days_ago
     )
-    prev_month_revenue = (
-        prev_month_orders.aggregate(Sum("total_price"))["total_price__sum"] or 0
-    )
+    prev_month_revenue = prev_month_orders.aggregate(Sum("total_price"))["total_price__sum"] or 0
     prev_month_count = prev_month_orders.count()
 
     # Вычисляем процент роста
@@ -319,17 +301,13 @@ def dashboard_api(request):
         day_start = day.replace(hour=0, minute=0, second=0, microsecond=0)
         day_end = day_start + timedelta(days=1)
 
-        day_orders = Order.objects.filter(
-            created_at__gte=day_start, created_at__lt=day_end
-        )
+        day_orders = Order.objects.filter(created_at__gte=day_start, created_at__lt=day_end)
 
         sales_data.append(
             {
                 "date": day.strftime("%Y-%m-%d"),
                 "orders": day_orders.count(),
-                "revenue": float(
-                    day_orders.aggregate(Sum("total_price"))["total_price__sum"] or 0
-                ),
+                "revenue": float(day_orders.aggregate(Sum("total_price"))["total_price__sum"] or 0),
             }
         )
 
@@ -341,25 +319,19 @@ def dashboard_api(request):
 
     for category in Category.objects.all():
         sold_items = (
-            OrderItem.objects.filter(product__category=category).aggregate(
-                total=Sum("quantity")
-            )["total"]
+            OrderItem.objects.filter(product__category=category).aggregate(total=Sum("quantity"))[
+                "total"
+            ]
             or 0
         )
 
-        percentage = (
-            round((sold_items / total_sold_items) * 100, 1)
-            if total_sold_items > 0
-            else 0
-        )
+        percentage = round((sold_items / total_sold_items) * 100, 1) if total_sold_items > 0 else 0
 
         category_data.append(
             {"name": category.name, "percentage": percentage, "sold_items": sold_items}
         )
 
-    return JsonResponse(
-        {"sales_data": sales_data, "category_data": category_data, "success": True}
-    )
+    return JsonResponse({"sales_data": sales_data, "category_data": category_data, "success": True})
 
 
 @admin_required
@@ -515,9 +487,7 @@ def admin_user_role(request, user_id):
         form = UserRoleForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
-            messages.success(
-                request, f"Роль пользователя {user.username} успешно изменена!"
-            )
+            messages.success(request, f"Роль пользователя {user.username} успешно изменена!")
             return redirect("shop:admin_users")
     else:
         form = UserRoleForm(instance=user)

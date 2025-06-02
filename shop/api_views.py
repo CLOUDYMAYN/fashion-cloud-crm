@@ -24,15 +24,15 @@ def dashboard_stats_api(request):
     stats = {
         "total_orders": Order.objects.filter(created_at__gte=start_date).count(),
         "total_revenue": float(
-            Order.objects.filter(created_at__gte=start_date).aggregate(
-                total=Sum("total_price")
-            )["total"]
+            Order.objects.filter(created_at__gte=start_date).aggregate(total=Sum("total_price"))[
+                "total"
+            ]
             or 0
         ),
         "avg_order_value": float(
-            Order.objects.filter(created_at__gte=start_date).aggregate(
-                avg=Avg("total_price")
-            )["avg"]
+            Order.objects.filter(created_at__gte=start_date).aggregate(avg=Avg("total_price"))[
+                "avg"
+            ]
             or 0
         ),
         "total_customers": User.objects.filter(role="customer").count(),
@@ -46,17 +46,13 @@ def dashboard_stats_api(request):
         day_start = day.replace(hour=0, minute=0, second=0, microsecond=0)
         day_end = day_start + timedelta(days=1)
 
-        day_orders = Order.objects.filter(
-            created_at__gte=day_start, created_at__lt=day_end
-        )
+        day_orders = Order.objects.filter(created_at__gte=day_start, created_at__lt=day_end)
 
         daily_sales.append(
             {
                 "date": day.strftime("%Y-%m-%d"),
                 "orders": day_orders.count(),
-                "revenue": float(
-                    day_orders.aggregate(Sum("total_price"))["total_price__sum"] or 0
-                ),
+                "revenue": float(day_orders.aggregate(Sum("total_price"))["total_price__sum"] or 0),
             }
         )
 
