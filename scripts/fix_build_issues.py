@@ -94,5 +94,6 @@ def main():
         print("Some build checks failed. Please fix the issues.")
         return 1
 
+
 if __name__ == "__main__":
     sys.exit(main())

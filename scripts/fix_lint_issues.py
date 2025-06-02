@@ -71,5 +71,6 @@ def main():
     print("\nLinting fixes completed. Please review the changes and commit them.")
     return 0
 
+
 if __name__ == "__main__":
     exit(main())

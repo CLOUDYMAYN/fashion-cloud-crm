@@ -1,16 +1,4 @@
 [flake8]
-ignore = F403, F405
-exclude =
-    .venv,
-    myvenv,
-    venv,
-    __pycache__,
-    migrations,
-    manage.py,
-    *.pyc,
-    tests,
-    scripts/__init__.py
+exclude = .venv,venv,__pycache__,migrations
 max-line-length = 100
 ignore = F403, F405
-
-
