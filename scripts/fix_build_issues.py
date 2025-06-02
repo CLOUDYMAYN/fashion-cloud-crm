@@ -8,6 +8,7 @@ import os
 import sys
 import subprocess
 from pathlib import Path
+
 project_root = Path(__file__).resolve().parent.parent
 
 

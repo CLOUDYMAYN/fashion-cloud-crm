@@ -10,8 +10,13 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
 from .decorators import admin_required, boss_required
-from .forms import (CategoryForm, CheckoutForm, CustomUserCreationForm,
-                    ProductForm, UserRoleForm)
+from .forms import (
+    CategoryForm,
+    CheckoutForm,
+    CustomUserCreationForm,
+    ProductForm,
+    UserRoleForm,
+)
 from .models import Cart, CartItem, Category, Order, OrderItem, Product, User
 
 
