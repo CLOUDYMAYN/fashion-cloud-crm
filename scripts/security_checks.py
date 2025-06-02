@@ -1,0 +1,129 @@
+#!/usr/bin/env python
+"""
+Security checks for Django CRM Shop.
+
+This script performs security checks on the Django CRM Shop project.
+"""
+
+import os
+import sys
+import subprocess
+from pathlib import Path
+
+# Add the project root to the path
+project_root = Path(__file__).resolve().parent.parent
+sys.path.append(str(project_root))
+
+# Import Django settings
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "crm_shop.settings")
+import django
+django.setup()
+
+from django.conf import settings
+
+
+def check_debug_mode():
+    """Check if DEBUG is set to False in production."""
+    if settings.DEBUG:
+        print("WARNING: DEBUG is set to True. This should be False in production.")
+        return False
+    return True
+
+
+def check_secret_key():
+    """Check if SECRET_KEY is properly set."""
+    if settings.SECRET_KEY == "your-secret-key-here" or len(settings.SECRET_KEY) < 32:
+        print("WARNING: SECRET_KEY is not properly set.")
+        return False
+    return True
+
+
+def check_allowed_hosts():
+    """Check if ALLOWED_HOSTS is properly set."""
+    if settings.ALLOWED_HOSTS == ["*"] or not settings.ALLOWED_HOSTS:
+        print("WARNING: ALLOWED_HOSTS is not properly set.")
+        return False
+    return True
+
+
+def check_secure_settings():
+    """Check if secure settings are properly set."""
+    secure_settings = True
+    
+    if not settings.SESSION_COOKIE_SECURE:
+        print("WARNING: SESSION_COOKIE_SECURE is not set to True.")
+        secure_settings = False
+    
+    if not settings.CSRF_COOKIE_SECURE:
+        print("WARNING: CSRF_COOKIE_SECURE is not set to True.")
+        secure_settings = False
+    
+    if not settings.SECURE_SSL_REDIRECT:
+        print("WARNING: SECURE_SSL_REDIRECT is not set to True.")
+        secure_settings = False
+    
+    return secure_settings
+
+
+def run_bandit():
+    """Run bandit security check."""
+    try:
+        result = subprocess.run(
+            ["bandit", "-r", str(project_root), "-x", "tests/,venv/"],
+            capture_output=True,
+            text=True,
+        )
+        if result.returncode != 0:
+            print("WARNING: Bandit found security issues:")
+            print(result.stdout)
+            return False
+        return True
+    except FileNotFoundError:
+        print("WARNING: Bandit is not installed. Install it with 'pip install bandit'.")
+        return False
+
+
+def run_safety():
+    """Run safety check on dependencies."""
+    try:
+        result = subprocess.run(
+            ["safety", "check", "--file", str(project_root / "requirements.txt")],
+            capture_output=True,
+            text=True,
+        )
+        if result.returncode != 0:
+            print("WARNING: Safety found security issues in dependencies:")
+            print(result.stdout)
+            return False
+        return True
+    except FileNotFoundError:
+        print("WARNING: Safety is not installed. Install it with 'pip install safety'.")
+        return False
+
+
+def main():
+    """Run all security checks."""
+    checks = [
+        check_debug_mode,
+        check_secret_key,
+        check_allowed_hosts,
+        check_secure_settings,
+        run_bandit,
+        run_safety,
+    ]
+    
+    all_passed = True
+    for check in checks:
+        if not check():
+            all_passed = False
+    
+    if all_passed:
+        print("All security checks passed!")
+        return 0
+    else:
+        print("Some security checks failed. Please fix the issues.")
+        return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())
