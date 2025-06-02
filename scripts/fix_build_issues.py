@@ -3,10 +3,10 @@
 Fix common build issues in the project.
 """
 import os
+import shutil
 import subprocess  # nosec B404
 import sys
 from pathlib import Path
-import shutil
 
 project_root = Path(__file__).resolve().parent.parent
 

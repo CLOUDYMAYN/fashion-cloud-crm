@@ -2,9 +2,9 @@
 """
 Fix common linting issues in the project.
 """
+import shutil
 import subprocess  # nosec B404
 from pathlib import Path
-import shutil
 
 project_root = Path(__file__).resolve().parent.parent
 
