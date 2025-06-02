@@ -20,7 +20,12 @@ def safe_run(cmd, **kwargs):
 
 def check_docker_build():
     print("Checking Docker build...")
-    result = safe_run(["docker", "build", "-t", "crm-shop-test", "."], cwd=project_root, capture_output=True, text=True)
+    result = safe_run(
+        ["docker", "build", "-t", "crm-shop-test", "."],
+        cwd=project_root,
+        capture_output=True,
+        text=True,
+    )
     if result.returncode != 0:
         print("Docker build failed:")
         print(result.stderr)
@@ -35,7 +40,11 @@ def check_requirements():
         safe_run(["rm", "-rf", str(venv_dir)])
     safe_run(["python", "-m", "venv", str(venv_dir)], check=True)
     pip = str(venv_dir / "bin" / "pip")
-    result = safe_run([pip, "install", "-r", str(project_root / "requirements.txt")], capture_output=True, text=True)
+    result = safe_run(
+        [pip, "install", "-r", str(project_root / "requirements.txt")],
+        capture_output=True,
+        text=True,
+    )
     safe_run(["rm", "-rf", str(venv_dir)])
     if result.returncode != 0:
         print("Requirements installation failed:")
@@ -46,13 +55,21 @@ def check_requirements():
 
 def check_migrations():
     print("Checking migrations...")
-    os.environ.update({
-        "DJANGO_SETTINGS_MODULE": "crm_shop.settings",
-        "DATABASE_URL": "sqlite:///test.db",
-        "SECRET_KEY": "test-secret-key",
-        "DEBUG": "True",
-    })
-    result = safe_run(["python", "manage.py", "migrate", "--check"], cwd=project_root, capture_output=True, text=True, env=os.environ)
+    os.environ.update(
+        {
+            "DJANGO_SETTINGS_MODULE": "crm_shop.settings",
+            "DATABASE_URL": "sqlite:///test.db",
+            "SECRET_KEY": "test-secret-key",
+            "DEBUG": "True",
+        }
+    )
+    result = safe_run(
+        ["python", "manage.py", "migrate", "--check"],
+        cwd=project_root,
+        capture_output=True,
+        text=True,
+        env=os.environ,
+    )
     if result.returncode != 0:
         print("Migrations check failed:")
         print(result.stderr)
