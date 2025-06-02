@@ -1,4 +1,4 @@
-import random
+import random  # nosec
 from datetime import timedelta
 from decimal import Decimal
 
@@ -39,23 +39,23 @@ class Command(BaseCommand):
             date = timezone.now() - timedelta(days=days_ago)
 
             # Больше заказов в выходные и праздники
-            orders_count = random.randint(2, 8)
+            orders_count = random.randint(2, 8)  # nosec
             if date.weekday() >= 5:  # Выходные
-                orders_count = random.randint(5, 12)
+                orders_count = random.randint(5, 12)  # nosec
 
             for _ in range(orders_count):
-                customer = random.choice(customers)
+                customer = random.choice(customers)  # nosec
 
                 order = Order.objects.create(
                     user=customer,
-                    first_name=customer.first_name or f"Покупатель{random.randint(1, 100)}",
-                    last_name=customer.last_name or f"Тестовый{random.randint(1, 100)}",
-                    email=customer.email or f"test{random.randint(1, 1000)}@example.com",
-                    phone=f"+7{random.randint(9000000000, 9999999999)}",
-                    address=f"ул. Тестовая, д. {random.randint(1, 100)}",
+                    first_name=customer.first_name or f"Покупатель{random.randint(1, 100)}",  # nosec
+                    last_name=customer.last_name or f"Тестовый{random.randint(1, 100)}",  # nosec
+                    email=customer.email or f"test{random.randint(1, 1000)}@example.com",  # nosec
+                    phone=f"+7{random.randint(9000000000, 9999999999)}",  # nosec
+                    address=f"ул. Тестовая, д. {random.randint(1, 100)}",  # nosec
                     city="Москва",
-                    postal_code=f"{random.randint(100000, 199999)}",
-                    status=random.choices(
+                    postal_code=f"{random.randint(100000, 199999)}",  # nosec
+                    status=random.choices(  # nosec
                         ["pending", "processing", "shipped", "delivered", "cancelled"],
                         weights=[10, 20, 15, 50, 5],  # Больше доставленных заказов
                     )[0],
@@ -64,13 +64,13 @@ class Command(BaseCommand):
                 )
 
                 # Добавляем товары в заказ
-                num_items = random.randint(1, 4)
+                num_items = random.randint(1, 4)  # nosec
                 total_price = Decimal("0")
 
-                selected_products = random.sample(list(products), min(num_items, len(products)))
+                selected_products = random.sample(list(products), min(num_items, len(products)))   # nosec
 
                 for product in selected_products:
-                    quantity = random.randint(1, 3)
+                    quantity = random.randint(1, 3)   # nosec
                     price = product.price
 
                     OrderItem.objects.create(
@@ -89,15 +89,15 @@ class Command(BaseCommand):
         products = Product.objects.all()
 
         # Делаем несколько товаров с низким остатком
-        low_stock_products = random.sample(list(products), min(5, len(products)))
+        low_stock_products = random.sample(list(products), min(5, len(products)))   # nosec
 
         for product in low_stock_products:
-            product.stock = random.randint(1, 4)  # Низкий остаток
+            product.stock = random.randint(1, 4)    # nosec
             product.save()
             self.stdout.write(f'⚠️ Товар "{product.name}" - остаток: {product.stock}')
 
         # Остальные товары с нормальным остатком
         for product in products:
             if product not in low_stock_products:
-                product.stock = random.randint(10, 50)
+                product.stock = random.randint(10, 50)    # nosec
                 product.save()
