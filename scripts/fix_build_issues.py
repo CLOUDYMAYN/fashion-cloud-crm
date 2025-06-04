@@ -22,21 +22,13 @@ def safe_run(cmd, **kwargs):
     full_cmd = [tool_path] + cmd[1:]
 
     return subprocess.run(
-        full_cmd,
-        shell=False,
-        capture_output=True,
-        text=True,
-        check=False,
-        **kwargs
+        full_cmd, shell=False, capture_output=True, text=True, check=False, **kwargs
     )
 
 
 def check_docker_build():
     print("Checking Docker build...")
-    result = safe_run(
-        ["docker", "build", "-t", "crm-shop-test", "."],
-        cwd=project_root
-    )
+    result = safe_run(["docker", "build", "-t", "crm-shop-test", "."], cwd=project_root)
     if result.returncode != 0:
         print("Docker build failed:")
         print(result.stderr)
@@ -51,9 +43,7 @@ def check_requirements():
         shutil.rmtree(venv_dir)
     safe_run(["python", "-m", "venv", str(venv_dir)])
     pip = shutil.which("pip") or str(venv_dir / "bin" / "pip")
-    result = safe_run(
-        [pip, "install", "-r", str(project_root / "requirements.txt")]
-    )
+    result = safe_run([pip, "install", "-r", str(project_root / "requirements.txt")])
     shutil.rmtree(venv_dir)
     if result.returncode != 0:
         print("Requirements installation failed:")
@@ -73,11 +63,7 @@ def check_migrations():
             "DEBUG": "True",
         }
     )
-    result = safe_run(
-        ["python", "manage.py", "migrate", "--check"],
-        cwd=project_root,
-        env=env
-    )
+    result = safe_run(["python", "manage.py", "migrate", "--check"], cwd=project_root, env=env)
     if result.returncode != 0:
         print("Migrations check failed:")
         print(result.stderr)
