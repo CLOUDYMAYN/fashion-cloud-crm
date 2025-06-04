@@ -6,10 +6,10 @@ This script performs security checks on the Django CRM Shop project.
 """
 
 import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
-import shutil
 
 import django
 from django.conf import settings

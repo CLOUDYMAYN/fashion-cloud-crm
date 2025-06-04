@@ -1,6 +1,7 @@
+import os
+
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-import os
 
 from shop.models import Cart, CartItem, Category, Product
 
