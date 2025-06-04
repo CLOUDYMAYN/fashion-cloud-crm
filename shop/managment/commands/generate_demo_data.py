@@ -15,6 +15,7 @@ User = get_user_model()
 class Command(BaseCommand):
     help = "Генерирует демонстрационные данные для проекта"
 
+
     def add_arguments(self, parser):
         parser.add_argument(
             "--orders", type=int, default=50, help="Количество заказов для создания"
@@ -22,6 +23,7 @@ class Command(BaseCommand):
         parser.add_argument(
             "--products", type=int, default=30, help="Количество товаров для создания"
         )
+
 
     def handle(self, *args, **options):
         self.stdout.write(self.style.SUCCESS("🚀 Генерация демонстрационных данных..."))
