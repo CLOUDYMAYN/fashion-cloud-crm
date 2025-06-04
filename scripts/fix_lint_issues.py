@@ -18,7 +18,7 @@ def safe_run(cmd, **kwargs):
     full_cmd = [tool_path] + cmd[1:]
     return subprocess.run(
         full_cmd, shell=False, capture_output=True, text=True, check=False, **kwargs
-    )
+    )  # nosec B603
 
 
 def run_black():

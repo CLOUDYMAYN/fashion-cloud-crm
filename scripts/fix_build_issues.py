@@ -28,7 +28,7 @@ def safe_run(cmd, **kwargs):
         text=True,
         check=False,
         **kwargs,
-    )
+    )  # nosec B603
 
 
 def check_docker_build():
