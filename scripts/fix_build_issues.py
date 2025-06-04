@@ -13,7 +13,7 @@ project_root = Path(__file__).resolve().parent.parent
 
 
 def safe_run(cmd, **kwargs):
-    """Run a command safely using full path."""
+    """Run a command safely using full executable path to avoid Bandit B603/B607."""
     tool_path = shutil.which(cmd[0])
     if tool_path is None:
         print(f"WARNING: {cmd[0]} not found in PATH")
@@ -22,7 +22,12 @@ def safe_run(cmd, **kwargs):
     full_cmd = [tool_path] + cmd[1:]
 
     return subprocess.run(
-        full_cmd, shell=False, capture_output=True, text=True, check=False, **kwargs
+        full_cmd,
+        shell=False,  # ensures no shell injection
+        capture_output=True,
+        text=True,
+        check=False,
+        **kwargs,
     )
 
 
@@ -41,10 +46,22 @@ def check_requirements():
     venv_dir = project_root / ".venv-test"
     if venv_dir.exists():
         shutil.rmtree(venv_dir)
-    safe_run(["python", "-m", "venv", str(venv_dir)])
-    pip = shutil.which("pip") or str(venv_dir / "bin" / "pip")
-    result = safe_run([pip, "install", "-r", str(project_root / "requirements.txt")])
+
+    python_exec = shutil.which("python")
+    if not python_exec:
+        print("Python not found.")
+        return False
+
+    # Create venv
+    result = safe_run([python_exec, "-m", "venv", str(venv_dir)])
+    if result.returncode != 0:
+        print("Virtual environment creation failed.")
+        return False
+
+    pip_exec = shutil.which("pip") or str(venv_dir / "bin" / "pip")
+    result = safe_run([pip_exec, "install", "-r", str(project_root / "requirements.txt")])
     shutil.rmtree(venv_dir)
+
     if result.returncode != 0:
         print("Requirements installation failed:")
         print(result.stderr)
@@ -63,7 +80,17 @@ def check_migrations():
             "DEBUG": "True",
         }
     )
-    result = safe_run(["python", "manage.py", "migrate", "--check"], cwd=project_root, env=env)
+
+    python_exec = shutil.which("python")
+    if not python_exec:
+        print("Python not found.")
+        return False
+
+    result = safe_run(
+        [python_exec, "manage.py", "migrate", "--check"],
+        cwd=project_root,
+        env=env,
+    )
     if result.returncode != 0:
         print("Migrations check failed:")
         print(result.stderr)

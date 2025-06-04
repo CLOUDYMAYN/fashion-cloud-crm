@@ -10,11 +10,14 @@ project_root = Path(__file__).resolve().parent.parent
 
 
 def safe_run(cmd, **kwargs):
-    if shutil.which(cmd[0]) is None:
+    tool_path = shutil.which(cmd[0])
+    if not tool_path:
         print(f"WARNING: {cmd[0]} not found in PATH")
         return subprocess.CompletedProcess(cmd, returncode=1)
+
+    full_cmd = [tool_path] + cmd[1:]
     return subprocess.run(
-        ["bandit", "-r", str(project_root)], shell=False, capture_output=True, text=True
+        full_cmd, shell=False, capture_output=True, text=True, check=False, **kwargs
     )
 
 
@@ -30,7 +33,7 @@ def run_isort():
 
 def run_flake8():
     print("Running flake8...")
-    result = safe_run(["flake8", str(project_root)], capture_output=True, text=True)
+    result = safe_run(["flake8", str(project_root)])
     if result.returncode != 0:
         print("Flake8 issues:\n" + result.stdout)
     else:
@@ -39,7 +42,7 @@ def run_flake8():
 
 def run_mypy():
     print("Running mypy...")
-    result = safe_run(["mypy", str(project_root)], capture_output=True, text=True)
+    result = safe_run(["mypy", str(project_root)])
     if result.returncode != 0:
         print("Mypy issues:\n" + result.stdout)
     else:

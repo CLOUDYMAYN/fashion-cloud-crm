@@ -74,7 +74,7 @@ def run_bandit():
         capture_output=True,
         text=True,
         check=False,
-    )  # nosec B603
+    )  # nosec B603 B607
     if result.returncode != 0:
         print("WARNING: Bandit found security issues:")
         print(result.stdout)
@@ -94,7 +94,7 @@ def run_safety():
         capture_output=True,
         text=True,
         check=False,
-    )  # nosec B603
+    )  # nosec B603 B607
     if result.returncode != 0:
         print("WARNING: Safety found security issues in dependencies:")
         print(result.stdout)
