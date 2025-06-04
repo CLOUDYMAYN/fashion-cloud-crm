@@ -6,11 +6,12 @@ from shop.models import Category, Product
 
 User = get_user_model()
 
+
 class ViewsTestCase(TestCase):
     def setUp(self):
         self.client = Client()
-        self.user = User.objects.create_user(username="testuser", password="testpass123") #nosec
-        self.user = User.objects.create_user(username="testuser", password="testpass123")  # nosec
+        self.user = User.objects.create_user(username="testuser", password="testpass123")  #nosec
+        self.user = User.objects.create_user(username="testuser", password="testpass123")  #nosec
         self.admin_user = User.objects.create_user(
             username="admin", password="adminpass123", role="manager"
         )  #nosec
@@ -44,8 +45,8 @@ class ViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_dashboard_with_admin_user(self):
-        self.client.login(username="admin", password="adminpass123")  # nosec
-        self.client.login(username="admin", password="adminpass123") #nosec
+        self.client.login(username="admin", password="adminpass123")  #nosec
+        self.client.login(username="admin", password="adminpass123")  #nosec
         response = self.client.get(reverse("shop:dashboard"))
         self.assertEqual(response.status_code, 200)
 
