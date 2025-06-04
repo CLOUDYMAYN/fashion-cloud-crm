@@ -2,6 +2,7 @@
 """
 Fix common build issues in the project.
 """
+
 import os
 import shutil
 import subprocess  # nosec B404
@@ -12,11 +13,21 @@ project_root = Path(__file__).resolve().parent.parent
 
 
 def safe_run(cmd, **kwargs):
-    if shutil.which(cmd[0]) is None:
+    """Run a command safely using full path."""
+    tool_path = shutil.which(cmd[0])
+    if tool_path is None:
         print(f"WARNING: {cmd[0]} not found in PATH")
         return subprocess.CompletedProcess(cmd, returncode=1)
+
+    full_cmd = [tool_path] + cmd[1:]
+
     return subprocess.run(
-        ["bandit", "-r", str(project_root)], shell=False, capture_output=True, text=True
+        full_cmd,
+        shell=False,
+        capture_output=True,
+        text=True,
+        check=False,
+        **kwargs
     )
 
 
@@ -24,9 +35,7 @@ def check_docker_build():
     print("Checking Docker build...")
     result = safe_run(
         ["docker", "build", "-t", "crm-shop-test", "."],
-        cwd=project_root,
-        capture_output=True,
-        text=True,
+        cwd=project_root
     )
     if result.returncode != 0:
         print("Docker build failed:")
@@ -39,15 +48,13 @@ def check_requirements():
     print("Checking requirements installation...")
     venv_dir = project_root / ".venv-test"
     if venv_dir.exists():
-        safe_run(["rm", "-rf", str(venv_dir)])
-    safe_run(["python", "-m", "venv", str(venv_dir)], check=True)
-    pip = str(venv_dir / "bin" / "pip")
+        shutil.rmtree(venv_dir)
+    safe_run(["python", "-m", "venv", str(venv_dir)])
+    pip = shutil.which("pip") or str(venv_dir / "bin" / "pip")
     result = safe_run(
-        [pip, "install", "-r", str(project_root / "requirements.txt")],
-        capture_output=True,
-        text=True,
+        [pip, "install", "-r", str(project_root / "requirements.txt")]
     )
-    safe_run(["rm", "-rf", str(venv_dir)])
+    shutil.rmtree(venv_dir)
     if result.returncode != 0:
         print("Requirements installation failed:")
         print(result.stderr)
@@ -57,7 +64,8 @@ def check_requirements():
 
 def check_migrations():
     print("Checking migrations...")
-    os.environ.update(
+    env = os.environ.copy()
+    env.update(
         {
             "DJANGO_SETTINGS_MODULE": "crm_shop.settings",
             "DATABASE_URL": "sqlite:///test.db",
@@ -68,9 +76,7 @@ def check_migrations():
     result = safe_run(
         ["python", "manage.py", "migrate", "--check"],
         cwd=project_root,
-        capture_output=True,
-        text=True,
-        env=os.environ,
+        env=env
     )
     if result.returncode != 0:
         print("Migrations check failed:")
