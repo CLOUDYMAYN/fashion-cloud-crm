@@ -1,4 +1,4 @@
-# Development dependencies
+# Dev dependencies
 -r requirements.txt
 
 # Testing
@@ -10,10 +10,10 @@ coverage==7.3.2
 
 # Code quality
 black==25.1.0
-isort==5.12.0
-flake8==6.1.0
+isort==6.0.1          # ← Обновлено, чтобы совпадало с продакшн
+flake8==7.2.0         # ← Обновлено, чтобы совпадало с продакшн
 mypy==1.7.1
-bandit==1.7.5
+bandit==1.8.3         # ← Обновлено, чтобы совпадало с продакшн
 safety
 
 # Development tools
