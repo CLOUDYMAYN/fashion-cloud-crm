@@ -32,7 +32,7 @@ def check_debug_mode():
 
 def check_secret_key():
     """Check if SECRET_KEY is properly set."""
-    if not settings.SECRET_KEY or len(settings.SECRET_KEY) < 32:  #nosec
+    if not settings.SECRET_KEY or len(settings.SECRET_KEY) < 32:  # nosec
         print("WARNING: SECRET_KEY is not properly set.")
         return False
     return True

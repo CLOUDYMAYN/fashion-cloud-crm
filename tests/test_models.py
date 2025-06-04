@@ -8,8 +8,8 @@ User = get_user_model()
 
 class UserModelTest(TestCase):
     def setUp(self):
-        User.objects.create_user(..., password=os.getenv("TEST_PASSWORD", "defaultpass"))  #nosec
-        User.objects.create_user(..., password=os.getenv("TEST_PASSWORD", "defaultpass"))  #nosec
+        User.objects.create_user(..., password=os.getenv("TEST_PASSWORD", "defaultpass"))  # nosec
+        User.objects.create_user(..., password=os.getenv("TEST_PASSWORD", "defaultpass"))  # nosec
 
     def test_user_creation(self):
         self.assertEqual(self.user.username, "testuser")
@@ -44,8 +44,8 @@ class ProductModelTest(TestCase):
 
 class CartModelTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(..., password=os.getenv("TEST_PASSWORD", "defaultpass"))  #nosec
-        self.user = User.objects.create_user(..., password=os.getenv("TEST_PASSWORD", "defaultpass"))  #nosec
+        self.user = User.objects.create_user(..., password=os.getenv("TEST_PASSWORD", "defaultpass"))  # nosec
+        self.user = User.objects.create_user(..., password=os.getenv("TEST_PASSWORD", "defaultpass"))  # nosec
         self.category = Category.objects.create(name="Test Category", slug="test-category")
         self.product = Product.objects.create(
             name="Test Product",

@@ -10,8 +10,8 @@ User = get_user_model()
 class ViewsTestCase(TestCase):
     def setUp(self):
         self.client = Client()
-        self.user = User.objects.create_user(username="testuser", password="testpass123")  #nosec
-        self.user = User.objects.create_user(username="testuser", password="testpass123")  #nosec
+        self.user = User.objects.create_user(username="testuser", password="testpass123")  # nosec
+        self.user = User.objects.create_user(username="testuser", password="testpass123")  # nosec
         self.admin_user = User.objects.create_user(
             username="admin", password="adminpass123", role="manager"
         )  #nosec
@@ -45,11 +45,11 @@ class ViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_dashboard_with_admin_user(self):
-        self.client.login(username="admin", password="adminpass123")  #nosec
-        self.client.login(username="admin", password="adminpass123")  #nosec
+        self.client.login(username="admin", password="adminpass123")  # nosec
+        self.client.login(username="admin", password="adminpass123")  # nosec
         response = self.client.get(reverse("shop:dashboard"))
         self.assertEqual(response.status_code, 200)
 
     def test_add_to_cart_requires_login(self):
         response = self.client.post(reverse("shop:add_to_cart", args=[self.product.id]))
-        self.assertEqual(response.status_code, 302)  #Redirect to login
+        self.assertEqual(response.status_code, 302)  # Redirect to login
