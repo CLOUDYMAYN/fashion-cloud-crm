@@ -68,7 +68,9 @@ def run_bandit():
         if not bandit_path:
             print("WARNING: Bandit is not installed.")
             return False
-        result = subprocess.run(["bandit", "-r", str(project_root)], shell=False, capture_output=True, text=True)
+        result = subprocess.run(
+            ["bandit", "-r", str(project_root)], shell=False, capture_output=True, text=True
+        )
         if result.returncode != 0:
             print("WARNING: Bandit found security issues:")
             print(result.stdout)
@@ -86,7 +88,9 @@ def run_safety():
         if not safety_path:
             print("WARNING: Safety is not installed.")
             return False
-        result = subprocess.run(["bandit", "-r", str(project_root)], shell=False, capture_output=True, text=True)
+        result = subprocess.run(
+            ["bandit", "-r", str(project_root)], shell=False, capture_output=True, text=True
+        )
         if result.returncode != 0:
             print("WARNING: Safety found security issues in dependencies:")
             print(result.stdout)

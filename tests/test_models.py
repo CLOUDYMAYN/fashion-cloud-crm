@@ -47,8 +47,12 @@ class ProductModelTest(TestCase):
 
 class CartModelTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(..., password=os.getenv("TEST_PASSWORD", "defaultpass"))  # nosec
-        self.user = User.objects.create_user(..., password=os.getenv("TEST_PASSWORD", "defaultpass"))  # nosec
+        self.user = User.objects.create_user(
+            ..., password=os.getenv("TEST_PASSWORD", "defaultpass")
+        )  # nosec
+        self.user = User.objects.create_user(
+            ..., password=os.getenv("TEST_PASSWORD", "defaultpass")
+        )  # nosec
         self.category = Category.objects.create(name="Test Category", slug="test-category")
         self.product = Product.objects.create(
             name="Test Product",

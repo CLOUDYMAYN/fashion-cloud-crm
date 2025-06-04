@@ -13,7 +13,9 @@ def safe_run(cmd, **kwargs):
     if shutil.which(cmd[0]) is None:
         print(f"WARNING: {cmd[0]} not found in PATH")
         return subprocess.CompletedProcess(cmd, returncode=1)
-    return subprocess.run(["bandit", "-r", str(project_root)], shell=False, capture_output=True, text=True)
+    return subprocess.run(
+        ["bandit", "-r", str(project_root)], shell=False, capture_output=True, text=True
+    )
 
 
 def run_black():
