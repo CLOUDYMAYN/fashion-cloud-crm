@@ -14,7 +14,7 @@ class ViewsTestCase(TestCase):
         self.user = User.objects.create_user(username="testuser", password="testpass123")  # nosec
         self.admin_user = User.objects.create_user(
             username="admin", password="adminpass123", role="manager"
-        )  #nosec
+        )  # nosec
         self.category = Category.objects.create(name="Test Category", slug="test-category")
         self.product = Product.objects.create(
             name="Test Product",
