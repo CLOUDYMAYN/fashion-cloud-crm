@@ -11,7 +11,6 @@ from shop.models import Category, Order, OrderItem, Product
 
 User = get_user_model()
 
-
 class Command(BaseCommand):
     help = "Генерирует демонстрационные данные для проекта"
 

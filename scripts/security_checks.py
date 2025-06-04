@@ -11,7 +11,6 @@ import sys
 from pathlib import Path
 import shutil
 
-
 import django
 from django.conf import settings
 
@@ -22,7 +21,6 @@ sys.path.append(str(project_root))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "crm_shop.settings")
 django.setup()
 
-
 def check_debug_mode():
     """Check if DEBUG is set to False in production."""
     if settings.DEBUG:
@@ -30,14 +28,12 @@ def check_debug_mode():
         return False
     return True
 
-
 def check_secret_key():
     """Check if SECRET_KEY is properly set."""
-    if not settings.SECRET_KEY or len(settings.SECRET_KEY) < 32: # nosec
+    if not settings.SECRET_KEY or len(settings.SECRET_KEY) < 32:  # nosec
         print("WARNING: SECRET_KEY is not properly set.")
         return False
     return True
-
 
 def check_allowed_hosts():
     """Check if ALLOWED_HOSTS is properly set."""
@@ -45,7 +41,6 @@ def check_allowed_hosts():
         print("WARNING: ALLOWED_HOSTS is not properly set.")
         return False
     return True
-
 
 def check_secure_settings():
     """Check if secure settings are properly set."""
@@ -60,7 +55,6 @@ def check_secure_settings():
         print("WARNING: SECURE_SSL_REDIRECT is not set to True.")
         secure_settings = False
     return secure_settings
-
 
 def run_bandit():
     """Run bandit security check."""
@@ -79,7 +73,6 @@ def run_bandit():
         print("WARNING: Bandit is not installed. Install it with 'pip install bandit'.")
         return False
 
-
 def run_safety():
     """Run safety check on dependencies."""
     try:
@@ -96,7 +89,6 @@ def run_safety():
     except FileNotFoundError:
         print("WARNING: Safety is not installed. Install it with 'pip install safety'.")
         return False
-
 
 def main():
     """Run all security checks."""
@@ -118,7 +110,6 @@ def main():
     else:
         print("Some security checks failed. Please fix the issues.")
         return 1
-
 
 if __name__ == "__main__":
     sys.exit(main())

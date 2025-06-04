@@ -6,10 +6,10 @@ from shop.models import Cart, CartItem, Category, Product
 
 User = get_user_model()
 
-
 class UserModelTest(TestCase):
     def setUp(self):
         User.objects.create_user(..., password=os.getenv("TEST_PASSWORD", "defaultpass")) #nosec
+        User.objects.create_user(..., password=os.getenv("TEST_PASSWORD", "defaultpass"))  # nosec
 
     def test_user_creation(self):
         self.assertEqual(self.user.username, "testuser")
@@ -21,7 +21,6 @@ class UserModelTest(TestCase):
 
         self.user.role = "manager"
         self.assertTrue(self.user.is_admin_user())
-
 
 class ProductModelTest(TestCase):
     def setUp(self):
@@ -43,9 +42,9 @@ class ProductModelTest(TestCase):
     def test_product_str(self):
         self.assertEqual(str(self.product), "Test Product")
 
-
 class CartModelTest(TestCase):
     def setUp(self):
+        self.user = User.objects.create_user(..., password=os.getenv("TEST_PASSWORD", "defaultpass"))  # nosec
         self.user = User.objects.create_user(..., password=os.getenv("TEST_PASSWORD", "defaultpass")) #nosec
         self.category = Category.objects.create(name="Test Category", slug="test-category")
         self.product = Product.objects.create(
