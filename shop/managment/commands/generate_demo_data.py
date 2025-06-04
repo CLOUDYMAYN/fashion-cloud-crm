@@ -258,7 +258,7 @@ class Command(BaseCommand):
                         "category": category,
                         "description": prod_data["description"],
                         "price": Decimal(str(prod_data["price"])),
-                        "stock": random.randint(5, 50),  #  nosec B311 - not for crypto
+                        "stock": random.randint(5, 50),  #nosec B311 - not for crypto
                         "available": True,
                     },
                 )
@@ -279,32 +279,32 @@ class Command(BaseCommand):
 
         for i in range(options["orders"]):
             # Случайная дата в последние 60 дней
-            days_ago = random.randint(0, 60)  # nosec B311 - not for crypto
+            days_ago = random.randint(0, 60)  #nosec B311 - not for crypto
             order_date = timezone.now() - timedelta(days=days_ago)
 
-            customer = random.choice(customers)  # nosec B311 - not for crypto
+            customer = random.choice(customers)  #nosec B311 - not for crypto
 
             order = Order.objects.create(
                 user=customer,
                 first_name=customer.first_name or "Имя",
                 last_name=customer.last_name or "Фамилия",
                 email=customer.email,
-                phone=f"+7{random.randint(9000000000, 9999999999)}",  #  nosec B311 - not for crypto
-                address=f"ул. Примерная, д. {random.randint(1, 100)}",  #  nosec B311 - not for crypto
+                phone=f"+7{random.randint(9000000000, 9999999999)}",  #nosec B311 - not for crypto
+                address=f"ул. Примерная, д. {random.randint(1, 100)}",  #osec B311 - not for crypto
                 city="Москва",
-                postal_code=f"{random.randint(100000, 199999)}", #  nosec B311 - not for crypto
-                status=random.choice(statuses), #  nosec B311 - not for crypto
+                postal_code=f"{random.randint(100000, 199999)}", #nosec B311 - not for crypto
+                status=random.choice(statuses), #nosec B311 - not for crypto
                 created_at=order_date,
                 total_price=0,  # Будет пересчитано ниже
             )
 
             # Добавляем товары в заказ
-            num_items = random.randint(1, 5)  #  nosec B311 - not for crypto
+            num_items = random.randint(1, 5)  #nosec B311 - not for crypto
             total_price = Decimal("0")
 
             for _ in range(num_items):
-                product = random.choice(products)  #  nosec B311 - not for crypto
-                quantity = random.randint(1, 3)  #  nosec B311 - not for crypto
+                product = random.choice(products)  #nosec B311 - not for crypto
+                quantity = random.randint(1, 3)  #nosec B311 - not for crypto
                 price = product.price
 
                 OrderItem.objects.create(
