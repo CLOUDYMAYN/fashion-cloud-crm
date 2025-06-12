@@ -1,0 +1,62 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Главная - Магазин одежды{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="container">
+        <h1 class="hero-title">Добро пожаловать в FashionStore</h1>
+        <p class="hero-subtitle">Стильная одежда для современных людей</p>
+        <a href="{% url 'shop:product_list' %}" class="btn btn-primary">Посмотреть каталог</a>
+    </div>
+</section>
+
+<section class="container mt-4">
+    <h2 class="section-title">Рекомендуемые товары</h2>
+    
+    {% if featured_products %}
+        <div class="products-grid">
+            {% for product in featured_products %}
+                <div class="product-card">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+                    {% else %}
+                        <div class="product-image" style="background: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #999;">
+                            Нет изображения
+                        </div>
+                    {% endif %}
+                    <div class="product-info">
+                        <h3 class="product-title">{{ product.name }}</h3>
+                        <p class="product-price">{{ product.price }} ₽</p>
+                        <p class="product-description">{{ product.description|truncatewords:15 }}</p>
+                        {% if user.is_authenticated and not user.is_admin_user %}
+                            <button onclick="addToCart({{ product.id }})" class="btn btn-primary btn-small">
+                                Добавить в корзину
+                            </button>
+                        {% endif %}
+                        <a href="{% url 'shop:product_detail' product.slug %}" class="btn btn-secondary btn-small">
+                            Подробнее
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <h3>Товары скоро появятся</h3>
+            <p>Мы работаем над наполнением каталога</p>
+        </div>
+    {% endif %}
+</section>
+
+<section class="container mt-4 mb-4">
+    <h2 class="section-title">Категории</h2>
+    <div class="category-filters">
+        {% for category in categories %}
+            <a href="{% url 'shop:product_list' %}?category={{ category.slug }}" class="category-filter">
+                {{ category.name }}
+            </a>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

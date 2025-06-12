@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Магазин одежды{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'shop/css/style.css' %}">
+</head>
+<body>
+    <!-- Add this right after the opening <body> tag -->
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-container">
+                <a href="{% url 'shop:home' %}" class="logo">FashionStore</a>
+                
+                {% if user.is_authenticated and user.is_admin_user %}
+                    <!-- Admin Navigation -->
+                    <ul class="nav-links">
+                        <li><a href="{% url 'shop:dashboard' %}">Dashboard</a></li>
+                        <li><a href="{% url 'shop:admin_categories' %}">Категории</a></li>
+                        <li><a href="{% url 'shop:admin_products' %}">Товары</a></li>
+                        <li><a href="{% url 'shop:admin_orders' %}">Заказы</a></li>
+                        {% if user.role == 'boss' %}
+                            <li><a href="{% url 'shop:admin_users' %}">Пользователи</a></li>
+                        {% endif %}
+                        <li><a href="#" onclick="logout()">Выйти</a></li>
+                    </ul>
+                {% else %}
+                    <!-- Customer Navigation -->
+                    <ul class="nav-links">
+                        <li><a href="{% url 'shop:home' %}">Главная</a></li>
+                        <li><a href="{% url 'shop:product_list' %}">Каталог</a></li>
+                        <li><a href="{% url 'shop:contacts' %}">Контакты</a></li>
+                        {% if user.is_authenticated %}
+                            <li>
+                                <a href="{% url 'shop:cart' %}" class="cart-icon">
+                                    🛒
+                                    {% if cart_items_count > 0 %}
+                                        <span class="cart-count">{{ cart_items_count }}</span>
+                                    {% endif %}
+                                </a>
+                            </li>
+                            <li><a href="#" onclick="logout()">Выйти</a></li>
+                        {% else %}
+                            <li><a href="{% url 'shop:login' %}">Войти</a></li>
+                            <li><a href="{% url 'shop:signup' %}">Регистрация</a></li>
+                        {% endif %}
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        {% if messages %}
+            <div class="container">
+                <div class="messages">
+                    {% for message in messages %}
+                        <div class="message {{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <script>
+        function logout() {
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || '{{ csrf_token }}';
+            
+            fetch('{% url "shop:logout" %}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = '{% url "shop:home" %}';
+                }
+            })
+            .catch(error => {
+                console.error('Logout error:', error);
+                // Fallback - redirect to logout URL  
+                window.location.href = '{% url "shop:logout" %}';
+            });
+        }
+
+        function addToCart(productId) {
+            fetch(`/add-to-cart/${productId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Обновляем счетчик корзины
+                    const cartCount = document.querySelector('.cart-count');
+                    if (cartCount) {
+                        cartCount.textContent = data.cart_items_count;
+                    } else if (data.cart_items_count > 0) {
+                        // Создаем счетчик если его не было
+                        const cartIcon = document.querySelector('.cart-icon');
+                        const countSpan = document.createElement('span');
+                        countSpan.className = 'cart-count';
+                        countSpan.textContent = data.cart_items_count;
+                        cartIcon.appendChild(countSpan);
+                    }
+                    alert('Товар добавлен в корзину!');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

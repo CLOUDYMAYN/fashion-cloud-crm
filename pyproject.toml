@@ -1,0 +1,13 @@
+[tool.black]
+exclude = '''
+/(
+    \.venv
+  | venv
+  | migrations
+)/
+'''
+line-length = 100
+
+[tool.isort]
+profile = "black"
+skip = ["migrations", ".venv", "venv"]

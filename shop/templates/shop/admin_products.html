@@ -1,0 +1,79 @@
+{% extends base_template|default:'shop/base_dashboard.html' %}
+
+{% block title %}Управление товарами - FashionStore{% endblock %}
+
+{% block content %}
+<div class="dashboard-content">
+    <div class="dashboard-header">
+        <h1>📦 Управление товарами</h1>
+        <div class="header-actions">
+            <a href="{% url 'shop:admin_product_create' %}" class="btn btn-primary">
+                <span>➕</span> Добавить товар
+            </a>
+        </div>
+    </div>
+    
+    {% if products %}
+        <div class="data-table-card">
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Изображение</th>
+                            <th>Название</th>
+                            <th>Категория</th>
+                            <th>Цена</th>
+                            <th>Склад</th>
+                            <th>Статус</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                            <tr>
+                                <td>
+                                    {% if product.image %}
+                                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-thumb">
+                                    {% else %}
+                                        <div class="product-thumb-placeholder">
+                                            📷
+                                        </div>
+                                    {% endif %}
+                                </td>
+                                <td class="product-name">{{ product.name }}</td>
+                                <td>{{ product.category.name }}</td>
+                                <td class="price">{{ product.price }} ₽</td>
+                                <td class="stock">{{ product.stock }}</td>
+                                <td>
+                                    {% if product.available %}
+                                        <span class="status-badge status-active">Доступен</span>
+                                    {% else %}
+                                        <span class="status-badge status-inactive">Недоступен</span>
+                                    {% endif %}
+                                </td>
+                                <td class="actions">
+                                    <a href="{% url 'shop:admin_product_edit' product.id %}" class="action-btn edit">
+                                        ✏️
+                                    </a>
+                                    <a href="{% url 'shop:admin_product_delete' product.id %}" class="action-btn delete">
+                                        🗑️
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        <div class="empty-state-card">
+            <div class="empty-icon">📦</div>
+            <h3>Товаров пока нет</h3>
+            <p>Добавьте первый товар в каталог</p>
+            <a href="{% url 'shop:admin_product_create' %}" class="btn btn-primary">
+                Добавить товар
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

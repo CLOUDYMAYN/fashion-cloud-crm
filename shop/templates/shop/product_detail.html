@@ -1,0 +1,44 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}{{ product.name }} - Магазин одежды{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-body">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
+                <div>
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 100%; border-radius: 8px;">
+                    {% else %}
+                        <div style="width: 100%; height: 400px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #999; border-radius: 8px;">
+                            Нет изображения
+                        </div>
+                    {% endif %}
+                </div>
+                <div>
+                    <h1>{{ product.name }}</h1>
+                    <p style="color: #666; margin: 1rem 0;">Категория: {{ product.category.name }}</p>
+                    <p style="font-size: 2rem; font-weight: bold; color: #667eea; margin: 1rem 0;">{{ product.price }} ₽</p>
+                    <p style="line-height: 1.6; margin: 1.5rem 0;">{{ product.description }}</p>
+                    
+                    {% if product.stock > 0 %}
+                        <p style="color: #28a745; margin: 1rem 0;">В наличии: {{ product.stock }} шт.</p>
+                        {% if user.is_authenticated and not user.is_admin_user %}
+                            <button onclick="addToCart({{ product.id }})" class="btn btn-primary">
+                                Добавить в корзину
+                            </button>
+                        {% endif %}
+                    {% else %}
+                        <p style="color: #dc3545; margin: 1rem 0;">Нет в наличии</p>
+                    {% endif %}
+                    
+                    <a href="{% url 'shop:product_list' %}" class="btn btn-secondary" style="margin-left: 1rem;">
+                        Назад к каталогу
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
