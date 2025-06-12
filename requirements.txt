@@ -26,3 +26,4 @@ stevedore==5.4.1
 whitenoise==6.9.0
 psycopg2-binary==2.9.9
 gunicorn
+import dj_database_url
