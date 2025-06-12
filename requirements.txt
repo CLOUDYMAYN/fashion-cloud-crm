@@ -25,3 +25,4 @@ sqlparse==0.5.3
 stevedore==5.4.1
 whitenoise==6.9.0
 psycopg2-binary==2.9.9
+gunicorn
