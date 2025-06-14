@@ -27,5 +27,5 @@ jobs:
         with:
           context: .
           file: Dockerfile
-          push: false
+          push: True
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/fashion-cloud-crm:latest
