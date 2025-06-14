@@ -18,6 +18,7 @@ from .forms import (
     UserRoleForm,
 )
 from .models import Cart, CartItem, Category, Order, OrderItem, Product, User
+from django.contrib.auth.models import User
 
 
 def get_base_template(user):
@@ -538,3 +539,10 @@ def health_check(request):
             },
             status=503,
         )
+
+
+def create_superuser_temp(request):
+    if not User.objects.filter(username="admin").exists():
+        User.objects.create_superuser("admin", "admin@example.com", "adminpassword123")
+        return HttpResponse("Superuser created!")
+    return HttpResponse("Superuser already exists.")
