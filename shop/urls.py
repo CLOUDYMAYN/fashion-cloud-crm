@@ -90,6 +90,4 @@ urlpatterns = [
     # Utility URLs
     path("login-redirect/", views.login_redirect_view, name="login_redirect"),
     path("health/", views.health_check, name="health_check"),
-    path("login-redirect/", views.login_redirect_view, name="login_redirect"),
-    path("create-superuser/", views.create_superuser_temp),
 ]
