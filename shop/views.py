@@ -8,7 +8,7 @@ from django.db.models import Avg, Sum
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
-
+from django.shortcuts import redirect
 from .decorators import admin_required, boss_required
 from .forms import (
     CategoryForm,
@@ -479,6 +479,15 @@ def admin_users(request):
             "base_template": get_base_template(request.user),
         },
     )
+
+
+@login_required
+def login_redirect_view(request):
+    user = request.user
+    if user.is_superuser or user.is_staff:
+        return redirect('shop:dashboard')  # на admin-панель
+    else:
+        return redirect('shop:home')  # обычный пользователь
 
 
 @boss_required
