@@ -519,7 +519,7 @@ def contacts(request):
 def login_redirect_view(request):
     """Перенаправление после входа в зависимости от роли"""
     if request.user.is_authenticated:
-        if request.user.is_admin_user():
+        if request.user.role in ["manager", "boss"]:
             return redirect("shop:dashboard")
         else:
             return redirect("shop:home")
