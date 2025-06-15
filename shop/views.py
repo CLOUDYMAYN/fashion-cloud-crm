@@ -516,14 +516,13 @@ def contacts(request):
     return render(request, "shop/contacts.html")
 
 
-def login_redirect_view(request):
     """Перенаправление после входа в зависимости от роли"""
-    if request.user.is_authenticated:
-        if request.user.role in ["manager", "boss"]:
-            return redirect("shop:dashboard")
-        else:
-            return redirect("shop:home")
-    return redirect("shop:login")
+@login_required
+def login_redirect_view(request):
+    if request.user.is_admin_user():
+        return redirect("shop:dashboard")
+    else:
+        return redirect("shop:home")
 
 
 def health_check(request):
