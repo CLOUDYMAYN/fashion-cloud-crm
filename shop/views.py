@@ -18,7 +18,8 @@ from .forms import (
     UserRoleForm,
 )
 from .models import Cart, CartItem, Category, Order, OrderItem, Product, User
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 
 def get_base_template(user):

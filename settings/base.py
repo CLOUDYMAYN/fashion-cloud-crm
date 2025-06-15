@@ -56,6 +56,7 @@ DATABASES = {
     }
 }
 
+AUTH_USER_MODEL = 'shop.User'
 LOGIN_REDIRECT_URL = '/login-redirect/'
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / "static"]
