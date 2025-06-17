@@ -1,14 +1,14 @@
 {% extends base_template|default:'shop/base_dashboard.html' %}
 
-{% block title %}Управление категориями - FashionStore{% endblock %}
+{% block title %}Category Management - FashionStore{% endblock %}
 
 {% block content %}
 <div class="dashboard-content">
     <div class="dashboard-header">
-        <h1>🏷️ Управление категориями</h1>
+        <h1>🏷️ Manage categories</h1>
         <div class="header-actions">
             <a href="{% url 'shop:admin_category_create' %}" class="btn btn-primary">
-                <span>➕</span> Добавить категорию
+                <span>➕</span> Add category
             </a>
         </div>
     </div>
@@ -19,11 +19,11 @@
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>Название</th>
+                            <th>Name</th>
                             <th>Slug</th>
-                            <th>Описание</th>
-                            <th>Дата создания</th>
-                            <th>Действия</th>
+                            <th>Description</th>
+                            <th>Date of creation</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -46,10 +46,10 @@
     {% else %}
         <div class="empty-state-card">
             <div class="empty-icon">🏷️</div>
-            <h3>Категорий пока нет</h3>
-            <p>Добавьте первую категорию</p>
+            <h3>There are no categories yet</h3>
+            <p>Add first category</p>
             <a href="{% url 'shop:admin_category_create' %}" class="btn btn-primary">
-                Добавить категорию
+                Add category
             </a>
         </div>
     {% endif %}
