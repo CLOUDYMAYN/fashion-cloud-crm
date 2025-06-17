@@ -1,17 +1,17 @@
 {% extends base_template|default:'shop/base_boss.html' %}
 
-{% block title %}Управление пользователями - FashionStore{% endblock %}
+{% block title %}User Management - FashionStore{% endblock %}
 
 {% block content %}
 <div class="dashboard-content">
     <div class="dashboard-header">
-        <h1>👥 Управление пользователями</h1>
+        <h1>👥 User Management</h1>
         <div class="header-actions">
             <div class="filter-buttons">
-                <button class="filter-btn active">Все</button>
-                <button class="filter-btn">Покупатели</button>
-                <button class="filter-btn">Менеджеры</button>
-                <button class="filter-btn">Руководители</button>
+                <button class="filter-btn active">All</button>
+                <button class="filter-btn">Buyers</button>
+                <button class="filter-btn">Managers</button>
+                <button class="filter-btn">Leaders</button>
             </div>
         </div>
     </div>
@@ -22,12 +22,12 @@
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>Пользователь</th>
-                            <th>Имя</th>
+                            <th>User</th>
+                            <th>Name</th>
                             <th>Email</th>
-                            <th>Роль</th>
-                            <th>Дата регистрации</th>
-                            <th>Действия</th>
+                            <th>Role</th>
+                            <th>Date of registration</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -56,7 +56,7 @@
     {% else %}
         <div class="empty-state-card">
             <div class="empty-icon">👥</div>
-            <h3>Пользователей пока нет</h3>
+            <h3>There are no users yet</h3>
         </div>
     {% endif %}
 </div>
