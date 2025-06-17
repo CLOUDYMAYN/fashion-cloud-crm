@@ -1,24 +1,24 @@
 {% extends base_template|default:'shop/base_dashboard.html' %}
 
-{% block title %}Продвинутая аналитика - FashionStore{% endblock %}
+{% block title %}Advanced Analytics - FashionStore{% endblock %}
 
 {% block content %}
 <div class="dashboard-content">
     <!-- Header with controls -->
     <div class="dashboard-header">
-        <h1>📊 Продвинутая аналитика</h1>
+        <h1>📊 Advanced Analytics</h1>
         <div class="header-actions">
             <select id="periodSelect" class="period-select">
-                <option value="7">7 дней</option>
-                <option value="30" selected>30 дней</option>
-                <option value="90">90 дней</option>
-                <option value="365">1 год</option>
+                <option value="7">7 days</option>
+                <option value="30" selected>30 days</option>
+                <option value="90">90 days</option>
+                <option value="365">1 year</option>
             </select>
             <button onclick="exportData('orders')" class="btn btn-secondary">
-                📊 Экспорт заказов
+                📊 Export orders
             </button>
             <button onclick="refreshData()" class="btn btn-primary">
-                🔄 Обновить
+                🔄 Refresh
             </button>
         </div>
     </div>
@@ -30,10 +30,10 @@
     <div class="advanced-stats-grid">
         <div class="stat-card revenue-card">
             <div class="stat-header">
-                <h3>💰 Выручка</h3>
-                <span class="stat-period" id="revenuePeriod">30 дней</span>
+                <h3>💰 Revenue</h3>
+                <span class="stat-period" id="revenuePeriod">30 days</span>
             </div>
-            <div class="stat-value" id="totalRevenue">0 ₽</div>
+            <div class="stat-value" id="totalRevenue">0 $</div>
             <div class="stat-change" id="revenueChange">+0%</div>
             <div class="stat-chart">
                 <canvas id="revenueChart" width="200" height="60"></canvas>
@@ -42,8 +42,8 @@
 
         <div class="stat-card orders-card">
             <div class="stat-header">
-                <h3>🛒 Заказы</h3>
-                <span class="stat-period" id="ordersPeriod">30 дней</span>
+                <h3>🛒 Orders</h3>
+                <span class="stat-period" id="ordersPeriod">30 Days</span>
             </div>
             <div class="stat-value" id="totalOrders">0</div>
             <div class="stat-change" id="ordersChange">+0%</div>
@@ -54,19 +54,19 @@
 
         <div class="stat-card customers-card">
             <div class="stat-header">
-                <h3>👥 Покупатели</h3>
-                <span class="stat-period">Всего</span>
+                <h3>👥 Buyers</h3>
+                <span class="stat-period">Total</span>
             </div>
             <div class="stat-value" id="totalCustomers">0</div>
-            <div class="stat-change" id="customersChange">Активных</div>
+            <div class="stat-change" id="customersChange">Active</div>
         </div>
 
         <div class="stat-card avg-order-card">
             <div class="stat-header">
-                <h3>📈 Средний чек</h3>
-                <span class="stat-period" id="avgOrderPeriod">30 дней</span>
+                <h3>📈 Average bill</h3>
+                <span class="stat-period" id="avgOrderPeriod">30 Days</span>
             </div>
-            <div class="stat-value" id="avgOrderValue">0 ₽</div>
+            <div class="stat-value" id="avgOrderValue">0 $</div>
             <div class="stat-change" id="avgOrderChange">+0%</div>
         </div>
     </div>
@@ -76,11 +76,11 @@
         <!-- Sales Trend Chart -->
         <div class="chart-card sales-trend">
             <div class="chart-header">
-                <h3>📈 Тренд продаж</h3>
+                <h3>📈 Sales trend</h3>
                 <div class="chart-controls">
-                    <button class="chart-btn active" onclick="switchChartType('revenue')">Выручка</button>
-                    <button class="chart-btn" onclick="switchChartType('orders')">Заказы</button>
-                    <button class="chart-btn" onclick="switchChartType('both')">Оба</button>
+                    <button class="chart-btn active" onclick="switchChartType('revenue')">Revenue</button>
+                    <button class="chart-btn" onclick="switchChartType('orders')">Orders</button>
+                    <button class="chart-btn" onclick="switchChartType('both')">Both</button>
                 </div>
             </div>
             <div class="chart-container">
@@ -91,8 +91,8 @@
         <!-- Category Performance -->
         <div class="chart-card category-performance">
             <div class="chart-header">
-                <h3>🏷️ Производительность категорий</h3>
-                <p>Продажи по категориям товаров</p>
+                <h3>🏷️ Category Performance</h3>
+                <p>Sales by product category</p>
             </div>
             <div class="chart-container">
                 <canvas id="categoryChart" width="400" height="400"></canvas>
@@ -104,20 +104,20 @@
     <!-- Top Products Table -->
     <div class="top-products-section">
         <div class="section-header">
-            <h3>🏆 Топ товары</h3>
+            <h3>🏆 Top products</h3>
             <button onclick="exportData('products')" class="btn btn-secondary">
-                📋 Экспорт товаров
+                📋 Export of goods
             </button>
         </div>
         <div class="table-container">
             <table class="data-table" id="topProductsTable">
                 <thead>
                     <tr>
-                        <th>Позиция</th>
-                        <th>Товар</th>
-                        <th>Продано</th>
-                        <th>Выручка</th>
-                        <th>Цена</th>
+                        <th>Position</th>
+                        <th>Product</th>
+                        <th>Sold out</th>
+                        <th>Revenue</th>
+                        <th>Price</th>
                     </tr>
                 </thead>
                 <tbody id="topProductsBody">
@@ -130,28 +130,28 @@
     <!-- Bulk Actions Panel -->
     <div class="bulk-actions-panel" id="bulkActionsPanel" style="display: none;">
         <div class="panel-header">
-            <h4>Массовые действия</h4>
+            <h4>Mass actions</h4>
             <button onclick="closeBulkActions()" class="close-btn">×</button>
         </div>
         <div class="panel-content">
             <div class="action-group">
                 <button onclick="bulkAction('activate')" class="btn btn-success">
-                    ✅ Активировать
+                    ✅ Activate
                 </button>
                 <button onclick="bulkAction('deactivate')" class="btn btn-danger">
-                    ❌ Деактивировать
+                    ❌ Deactivate
                 </button>
             </div>
             <div class="action-group">
                 <input type="number" id="stockValue" placeholder="Количество" class="form-input">
                 <button onclick="bulkUpdateStock()" class="btn btn-primary">
-                    📦 Обновить остаток
+                    📦 Update balance
                 </button>
             </div>
             <div class="action-group">
                 <input type="number" id="priceMultiplier" placeholder="Множитель (1.1 = +10%)" step="0.1" class="form-input">
                 <button onclick="bulkUpdatePrice()" class="btn btn-warning">
-                    💰 Изменить цены
+                    💰 Change prices
                 </button>
             </div>
         </div>
