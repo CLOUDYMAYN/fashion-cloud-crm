@@ -1,76 +1,76 @@
 {% extends 'shop/base.html' %}
 
-{% block title %}Заказ #{{ order.id }} - Магазин одежды{% endblock %}
+{% block title %}Order #{{ order.id }} - Clothing store{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-        <h1>Заказ #{{ order.id }}</h1>
+        <h1>Order #{{ order.id }}</h1>
         <a href="{% url 'shop:admin_orders' %}" class="btn btn-secondary">
-            Назад к заказам
+            Back to orders
         </a>
     </div>
     
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
         <div class="card">
             <div class="card-header">
-                <h3>Информация о заказе</h3>
+                <h3>Order information</h3>
             </div>
             <div class="card-body">
-                <p><strong>Статус:</strong> 
+                <p><strong>Status:</strong>
                     <span class="status-badge status-{{ order.status }}">
                         {{ order.get_status_display }}
                     </span>
                 </p>
-                <p><strong>Дата создания:</strong> {{ order.created_at|date:"d.m.Y H:i" }}</p>
-                <p><strong>Общая сумма:</strong> {{ order.total_price }} ₽</p>
+                <p><strong>Date of creation:</strong> {{ order.created_at|date:"d.m.Y H:i" }}</p>
+                <p><strong>Total amount:</strong> {{ order.total_price }} $</p>
             </div>
         </div>
         
         <div class="card">
             <div class="card-header">
-                <h3>Данные покупателя</h3>
+                <h3>Buyer details</h3>
             </div>
             <div class="card-body">
-                <p><strong>Имя:</strong> {{ order.first_name }} {{ order.last_name }}</p>
+                <p><strong>Name:</strong> {{ order.first_name }} {{ order.last_name }}</p>
                 <p><strong>Email:</strong> {{ order.email }}</p>
-                <p><strong>Телефон:</strong> {{ order.phone }}</p>
-                <p><strong>Адрес:</strong> {{ order.address }}</p>
-                <p><strong>Город:</strong> {{ order.city }}</p>
-                <p><strong>Индекс:</strong> {{ order.postal_code }}</p>
+                <p><strong>Telephone:</strong> {{ order.phone }}</p>
+                <p><strong>Address:</strong> {{ order.address }}</p>
+                <p><strong>City:</strong> {{ order.city }}</p>
+                <p><strong>Index:</strong> {{ order.postal_code }}</p>
             </div>
         </div>
     </div>
     
     <div class="card mt-4">
         <div class="card-header">
-            <h3>Товары в заказе</h3>
+            <h3>Items in order</h3>
         </div>
         <div class="card-body">
             <div class="table-container">
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Товар</th>
-                            <th>Цена</th>
-                            <th>Количество</th>
-                            <th>Сумма</th>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Sum</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for item in order.items.all %}
                             <tr>
                                 <td>{{ item.product.name }}</td>
-                                <td>{{ item.price }} ₽</td>
+                                <td>{{ item.price }} $</td>
                                 <td>{{ item.quantity }}</td>
-                                <td>{{ item.get_total_price }} ₽</td>
+                                <td>{{ item.get_total_price }} $</td>
                             </tr>
                         {% endfor %}
                     </tbody>
                     <tfoot>
                         <tr style="font-weight: bold; border-top: 2px solid #e9ecef;">
-                            <td colspan="3">Итого:</td>
-                            <td>{{ order.total_price }} ₽</td>
+                            <td colspan="3">Total:</td>
+                            <td>{{ order.total_price }} $</td>
                         </tr>
                     </tfoot>
                 </table>
