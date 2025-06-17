@@ -1,25 +1,25 @@
 {% extends 'shop/base.html' %}
 
-{% block title %}Оформление заказа - Магазин одежды{% endblock %}
+{% block title %}Placing an order - Clothing store{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
-    <h1 class="section-title">Оформление заказа</h1>
+    <h1 class="section-title">Placing an order</h1>
     
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
         <div class="card">
             <div class="card-header">
-                <h3>Данные для доставки</h3>
+                <h3>Delivery details</h3>
             </div>
             <div class="card-body">
                 <form method="post">
                     {% csrf_token %}
                     <div class="form-group">
-                        <label for="{{ form.first_name.id_for_label }}" class="form-label">Имя</label>
+                        <label for="{{ form.first_name.id_for_label }}" class="form-label">Name</label>
                         {{ form.first_name }}
                     </div>
                     <div class="form-group">
-                        <label for="{{ form.last_name.id_for_label }}" class="form-label">Фамилия</label>
+                        <label for="{{ form.last_name.id_for_label }}" class="form-label">Surname</label>
                         {{ form.last_name }}
                     </div>
                     <div class="form-group">
@@ -27,24 +27,24 @@
                         {{ form.email }}
                     </div>
                     <div class="form-group">
-                        <label for="{{ form.phone.id_for_label }}" class="form-label">Телефон</label>
-                        {{ formform.phone.id_for_label}}" class="form-label">Телефон</label>
+                        <label for="{{ form.phone.id_for_label }}" class="form-label">Telephone</label>
+                        {{ formform.phone.id_for_label}}" class="form-label">Telephone</label>
                         {{ form.phone }}
                     </div>
                     <div class="form-group">
-                        <label for="{{ form.address.id_for_label }}" class="form-label">Адрес</label>
+                        <label for="{{ form.address.id_for_label }}" class="form-label">Address</label>
                         {{ form.address }}
                     </div>
                     <div class="form-group">
-                        <label for="{{ form.city.id_for_label }}" class="form-label">Город</label>
+                        <label for="{{ form.city.id_for_label }}" class="form-label">City</label>
                         {{ form.city }}
                     </div>
                     <div class="form-group">
-                        <label for="{{ form.postal_code.id_for_label }}" class="form-label">Почтовый индекс</label>
+                        <label for="{{ form.postal_code.id_for_label }}" class="form-label">Postal code</label>
                         {{ form.postal_code }}
                     </div>
                     <button type="submit" class="btn btn-primary" style="width: 100%;">
-                        Оформить заказ
+                        Place an order
                     </button>
                 </form>
             </div>
@@ -52,24 +52,24 @@
         
         <div class="card">
             <div class="card-header">
-                <h3>Ваш заказ</h3>
+                <h3>Your order</h3>
             </div>
             <div class="card-body">
                 {% for item in cart.items.all %}
                     <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #e9ecef;">
                         <div>
                             <h4>{{ item.product.name }}</h4>
-                            <p>{{ item.quantity }} × {{ item.product.price }} ₽</p>
+                            <p>{{ item.quantity }} × {{ item.product.price }} $</p>
                         </div>
                         <div>
-                            <strong>{{ item.get_total_price }} ₽</strong>
+                            <strong>{{ item.get_total_price }} $</strong>
                         </div>
                     </div>
                 {% endfor %}
                 <div style="border-top: 2px solid #e9ecef; padding-top: 1rem; margin-top: 1rem;">
                     <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold;">
-                        <span>Итого:</span>
-                        <span>{{ cart.get_total_price }} ₽</span>
+                        <span>Total:</span>
+                        <span>{{ cart.get_total_price }} $</span>
                     </div>
                 </div>
             </div>
