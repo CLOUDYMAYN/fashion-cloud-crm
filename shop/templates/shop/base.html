@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Магазин одежды{% endblock %}</title>
+    <title>{% block title %}Clothing store{% endblock %}</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'shop/css/style.css' %}">
 </head>
@@ -19,20 +19,20 @@
                     <!-- Admin Navigation -->
                     <ul class="nav-links">
                         <li><a href="{% url 'shop:dashboard' %}">Dashboard</a></li>
-                        <li><a href="{% url 'shop:admin_categories' %}">Категории</a></li>
-                        <li><a href="{% url 'shop:admin_products' %}">Товары</a></li>
-                        <li><a href="{% url 'shop:admin_orders' %}">Заказы</a></li>
+                        <li><a href="{% url 'shop:admin_categories' %}">Categories</a></li>
+                        <li><a href="{% url 'shop:admin_products' %}">Product</a></li>
+                        <li><a href="{% url 'shop:admin_orders' %}">Orders</a></li>
                         {% if user.role == 'boss' %}
-                            <li><a href="{% url 'shop:admin_users' %}">Пользователи</a></li>
+                            <li><a href="{% url 'shop:admin_users' %}">Users</a></li>
                         {% endif %}
-                        <li><a href="#" onclick="logout()">Выйти</a></li>
+                        <li><a href="#" onclick="logout()">Log out</a></li>
                     </ul>
                 {% else %}
                     <!-- Customer Navigation -->
                     <ul class="nav-links">
-                        <li><a href="{% url 'shop:home' %}">Главная</a></li>
-                        <li><a href="{% url 'shop:product_list' %}">Каталог</a></li>
-                        <li><a href="{% url 'shop:contacts' %}">Контакты</a></li>
+                        <li><a href="{% url 'shop:home' %}">Home</a></li>
+                        <li><a href="{% url 'shop:product_list' %}">Catalog</a></li>
+                        <li><a href="{% url 'shop:contacts' %}">Contacts</a></li>
                         {% if user.is_authenticated %}
                             <li>
                                 <a href="{% url 'shop:cart' %}" class="cart-icon">
@@ -42,10 +42,10 @@
                                     {% endif %}
                                 </a>
                             </li>
-                            <li><a href="#" onclick="logout()">Выйти</a></li>
+                            <li><a href="#" onclick="logout()">Log out</a></li>
                         {% else %}
-                            <li><a href="{% url 'shop:login' %}">Войти</a></li>
-                            <li><a href="{% url 'shop:signup' %}">Регистрация</a></li>
+                            <li><a href="{% url 'shop:login' %}">Login</a></li>
+                            <li><a href="{% url 'shop:signup' %}">Registration</a></li>
                         {% endif %}
                     </ul>
                 {% endif %}
