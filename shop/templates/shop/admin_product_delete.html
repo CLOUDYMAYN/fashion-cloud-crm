@@ -1,22 +1,22 @@
 {% extends 'shop/base.html' %}
 
-{% block title %}Удаление товара - Магазин одежды{% endblock %}
+{% block title %}Item Removal - Clothing Store{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
     <div class="card" style="max-width: 500px; margin: 0 auto;">
         <div class="card-header">
-            <h2>Подтверждение удаления</h2>
+            <h2>Confirm deletion</h2>
         </div>
         <div class="card-body">
-            <p>Вы уверены, что хотите удалить товар <strong>"{{ product.name }}"</strong>?</p>
-            <p style="color: #dc3545; margin-top: 1rem;">Это действие нельзя отменить.</p>
+            <p>Are you sure you want to delete the item? <strong>"{{ product.name }}"</strong>?</p>
+            <p style="color: #dc3545; margin-top: 1rem;">This action cannot be undone.</p>
             
             <form method="post" style="margin-top: 2rem;">
                 {% csrf_token %}
                 <div style="display: flex; gap: 1rem;">
-                    <button type="submit" class="btn btn-danger">Да, удалить</button>
-                    <a href="{% url 'shop:admin_products' %}" class="btn btn-secondary">Отмена</a>
+                    <button type="submit" class="btn btn-danger">Yes, delete</button>
+                    <a href="{% url 'shop:admin_products' %}" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>
         </div>
