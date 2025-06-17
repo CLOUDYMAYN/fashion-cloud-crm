@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Подтверждение заказа</title>
+    <title>Order confirmation</title>
     <style>
         body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
@@ -18,44 +18,44 @@
     <div class="container">
         <div class="header">
             <h1>🛍️ FashionStore</h1>
-            <h2>Подтверждение заказа</h2>
+            <h2>Order confirmation</h2>
         </div>
         
         <div class="content">
-            <p>Здравствуйте, {{ customer_name }}!</p>
+            <p>Hello, {{ customer_name }}!</p>
             
-            <p>Спасибо за ваш заказ! Мы получили ваш заказ и начали его обработку.</p>
+            <p>Thank you for your order! We have received your order and have started processing it.</p>
             
             <div class="order-details">
-                <h3>📋 Детали заказа #{{ order.id }}</h3>
-                <p><strong>Дата заказа:</strong> {{ order.created_at|date:"d.m.Y H:i" }}</p>
-                <p><strong>Статус:</strong> {{ order.get_status_display }}</p>
+                <h3>📋 Order details #{{ order.id }}</h3>
+                <p><strong>Order date:</strong> {{ order.created_at|date:"d.m.Y H:i" }}</p>
+                <p><strong>Status:</strong> {{ order.get_status_display }}</p>
                 
-                <h4>📦 Товары:</h4>
+                <h4>📦 Goods:</h4>
                 {% for item in order.items.all %}
                 <div class="item">
                     <strong>{{ item.product.name }}</strong><br>
-                    Количество: {{ item.quantity }} шт. × {{ item.price }} ₽ = {{ item.get_total_price }} ₽
+                    Quantity: {{ item.quantity }} pcs. × {{ item.price }} $ = {{ item.get_total_price }} $
                 </div>
                 {% endfor %}
                 
                 <div class="total">
-                    Итого: {{ order.total_price }} ₽
+                    Total: {{ order.total_price }} $
                 </div>
             </div>
             
             <div class="order-details">
-                <h3>🚚 Адрес доставки:</h3>
+                <h3>🚚 Delivery address:</h3>
                 <p>{{ order.address }}<br>
                 {{ order.city }}, {{ order.postal_code }}</p>
-                <p><strong>Телефон:</strong> {{ order.phone }}</p>
+                <p><strong>Telephone:</strong> {{ order.phone }}</p>
             </div>
             
-            <p>Мы свяжемся с вами в ближайшее время для уточнения деталей доставки.</p>
+            <p>We will contact you shortly to clarify delivery details.</p>
         </div>
         
         <div class="footer">
-            <p>С уважением,<br>Команда FashionStore</p>
+            <p>Sincerely,<br>Team FashionStore</p>
             <p>📧 support@fashionstore.com | 📞 +7 (495) 123-45-67</p>
         </div>
     </div>
