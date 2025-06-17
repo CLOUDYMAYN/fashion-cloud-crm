@@ -1,17 +1,17 @@
 {% extends base_template|default:'shop/base_dashboard.html' %}
 
-{% block title %}Управление заказами - FashionStore{% endblock %}
+{% block title %}Order Management - FashionStore{% endblock %}
 
 {% block content %}
 <div class="dashboard-content">
     <div class="dashboard-header">
-        <h1>🛒 Управление заказами</h1>
+        <h1>🛒 Order management</h1>
         <div class="header-actions">
             <div class="filter-buttons">
-                <button class="filter-btn active">Все</button>
-                <button class="filter-btn">Новые</button>
-                <button class="filter-btn">В обработке</button>
-                <button class="filter-btn">Завершенные</button>
+                <button class="filter-btn active">All</button>
+                <button class="filter-btn">New</button>
+                <button class="filter-btn">In processing</button>
+                <button class="filter-btn">Completed</button>
             </div>
         </div>
     </div>
@@ -22,14 +22,14 @@
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>№ заказа</th>
-                            <th>Покупатель</th>
+                            <th>№ Order</th>
+                            <th>Buyer</th>
                             <th>Email</th>
-                            <th>Телефон</th>
-                            <th>Сумма</th>
-                            <th>Статус</th>
-                            <th>Дата</th>
-                            <th>Действия</th>
+                            <th>Telephone</th>
+                            <th>Sum</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -39,7 +39,7 @@
                                 <td class="customer-name">{{ order.first_name }} {{ order.last_name }}</td>
                                 <td class="email">{{ order.email }}</td>
                                 <td class="phone">{{ order.phone }}</td>
-                                <td class="price">{{ order.total_price }} ₽</td>
+                                <td class="price">{{ order.total_price }} $</td>
                                 <td>
                                     <span class="status-badge status-{{ order.status }}">
                                         {{ order.get_status_display }}
@@ -60,8 +60,8 @@
     {% else %}
         <div class="empty-state-card">
             <div class="empty-icon">🛒</div>
-            <h3>Заказов пока нет</h3>
-            <p>Заказы будут отображаться здесь</p>
+            <h3>There are no orders yet</h3>
+            <p>Orders will be displayed here</p>
         </div>
     {% endif %}
 </div>
