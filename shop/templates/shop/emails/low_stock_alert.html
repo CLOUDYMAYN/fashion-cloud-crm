@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Уведомление о низком остатке</title>
+    <title>Low balance notification</title>
     <style>
         body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
@@ -15,21 +15,21 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>⚠️ Уведомление о низком остатке</h1>
+            <h1>⚠️ Low balance notification</h1>
         </div>
         
         <div class="content">
-            <p class="warning">Внимание! Заканчивается товар на складе.</p>
+            <p class="warning">Attention! The product is running out of stock.</p>
             
             <div class="product-info">
                 <h3>📦 {{ product.name }}</h3>
-                <p><strong>Категория:</strong> {{ product.category.name }}</p>
-                <p><strong>Цена:</strong> {{ product.price }} ₽</p>
-                <p><strong>Остаток:</strong> <span class="warning">{{ product.stock }} шт.</span></p>
-                <p><strong>Статус:</strong> {% if product.available %}Доступен{% else %}Недоступен{% endif %}</p>
+                <p><strong>Category:</strong> {{ product.category.name }}</p>
+                <p><strong>Price:</strong> {{ product.price }} ₽</p>
+                <p><strong>Remainder:</strong> <span class="warning">{{ product.stock }} pcs.</span></p>
+                <p><strong>Status:</strong> {% if product.available %}Available{% else %}Not available{% endif %}</p>
             </div>
             
-            <p>Рекомендуется пополнить запасы данного товара.</p>
+            <p>It is recommended to replenish stocks of this product.</p>
         </div>
     </div>
 </body>
