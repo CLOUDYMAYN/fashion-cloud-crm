@@ -38,20 +38,20 @@
                 </a>
                 <a href="{% url 'shop:admin_products' %}" class="nav-item">
                     <span class="nav-icon">📦</span>
-                    <span class="nav-text">Товары</span>
+                    <span class="nav-text">Products</span>
                 </a>
                 <a href="{% url 'shop:admin_categories' %}" class="nav-item">
                     <span class="nav-icon">🏷️</span>
-                    <span class="nav-text">Категории</span>
+                    <span class="nav-text">Categories</span>
                 </a>
                 <a href="{% url 'shop:admin_orders' %}" class="nav-item">
                     <span class="nav-icon">🛒</span>
-                    <span class="nav-text">Заказы</span>
+                    <span class="nav-text">Orders</span>
                 </a>
                 {% if user.role == 'boss' %}
                 <a href="{% url 'shop:admin_users' %}" class="nav-item">
                     <span class="nav-icon">👥</span>
-                    <span class="nav-text">Пользователи</span>
+                    <span class="nav-text">Users</span>
                 </a>
                 {% endif %}
             </nav>
@@ -59,7 +59,7 @@
             <div class="sidebar-footer">
                 <button onclick="logout()" class="logout-btn">
                     <span class="logout-icon">🚪</span>
-                    <span class="logout-text">Выйти</span>
+                    <span class="logout-text">Log out</span>
                 </button>
             </div>
         </aside>
